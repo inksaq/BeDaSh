@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "507790607259",
+    "project_id": "bedash-9192a",
+    "storage_bucket": "bedash-9192a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507790607259:android:dd7ebf781c3baa00c5173e",
+        "android_client_info": {
+          "package_name": "com.bedash.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn1KxR1Epgr4NXWhgUz_gEaAF0AOQSHJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
