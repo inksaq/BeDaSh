@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="#4CAF50"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp">
+
+    <!-- Home Button - using public drawable -->
+    <ImageButton
+        android:id="@+id/home_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@android:drawable/ic_input_get"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Home"
+        android:tint="#FFFFFF"
+        android:padding="4dp"/>
+
+    <!-- User Text View - shows logged in user -->
+    <TextView
+        android:id="@+id/user_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="user@example.com"
+        android:textColor="#FFFFFF"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+    <!-- Logout Button - using public drawable -->
+    <ImageButton
+        android:id="@+id/navbar_logout_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@android:drawable/ic_lock_power_off"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Logout"
+        android:tint="#FFFFFF"
+        android:padding="4dp"/>
+
+</LinearLayout>

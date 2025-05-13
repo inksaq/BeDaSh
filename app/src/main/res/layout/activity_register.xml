@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#BBEBC4"
+    android:orientation="vertical"
     android:padding="24dp"
     tools:context=".RegisterActivity">
 
@@ -19,105 +20,96 @@
         android:textColor="#333333"
         android:textSize="28sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="100dp" />
 
     <!-- Username Field -->
     <TextView
         android:id="@+id/create_username_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create a username"
+        android:paddingStart="18dp"
+        android:paddingEnd="12dp"
         android:textColor="#333333"
-        android:layout_marginTop="60dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_title" />
+        android:layout_marginTop="60dp" />
 
     <EditText
         android:id="@+id/email_edit_text"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:hint=""
         android:inputType="textEmailAddress"
         android:background="@drawable/edit_text_white_background"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_username_label" />
+        android:layout_marginTop="8dp" />
 
     <!-- Password Field -->
     <TextView
         android:id="@+id/create_password_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create a password"
+        android:paddingStart="18dp"
+        android:paddingEnd="12dp"
         android:textColor="#333333"
-        android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_edit_text" />
+        android:layout_marginTop="24dp" />
 
     <EditText
         android:id="@+id/password_edit_text"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:hint=""
         android:inputType="textPassword"
         android:background="@drawable/edit_text_white_background"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_password_label" />
+        android:layout_marginTop="8dp" />
 
     <!-- Create Account Button -->
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/register_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create account"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:text="Register"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:background="@drawable/dark_button_background"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_edit_text" />
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:backgroundTint="#FF9800"
+        android:layout_marginTop="24dp" />
 
-    <!-- Yellow Bottom Stripe (Remove if not needed) -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <!-- Yellow Bottom Stripe -->
     <View
         android:id="@+id/bottom_stripe"
         android:layout_width="match_parent"
         android:layout_height="12dp"
-        android:background="#FFEB3B"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:background="#FFEB3B" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Hidden Button (We'll use navigation in code instead) -->
+    <!-- Hidden Button -->
     <Button
         android:id="@+id/back_to_login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
