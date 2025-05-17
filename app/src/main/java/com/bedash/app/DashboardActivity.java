@@ -1,45 +1,52 @@
 package com.bedash.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+
 public class DashboardActivity extends BaseActivity {
-    private Button logoutButton;
+    private Button createClientButton;
+    private Button viewExistingClientButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-
-        // Setup base activity (navbar, auth, etc)
         setupBase();
-
-        // Init additional view components
         initializeViews();
-
-        // Setup additional buttons
         setupButtons();
     }
 
     private void initializeViews() {
-        logoutButton = findViewById(R.id.logout_button);
+        createClientButton = findViewById(R.id.create_client_button);
+        viewExistingClientButton = findViewById(R.id.view_existing_client_button);
     }
 
     private void setupButtons() {
-        // Setup bottom logout button
-        logoutButton.setOnClickListener(new View.OnClickListener() {
+        createClientButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                logout();
+            public void onClick(View view) {
+                Toast.makeText(DashboardActivity.this, "Create Client clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DashboardActivity.this, CreateClientActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        viewExistingClientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(DashboardActivity.this, "View Existing Clients clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DashboardActivity.this, ClientListActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     @Override
     protected void handleHomeClick() {
-        // We're already on the dashboard, just show a toast
         Toast.makeText(this, "Already on Home screen", Toast.LENGTH_SHORT).show();
     }
 }

@@ -84,32 +84,6 @@
         android:backgroundTint="#FF9800"
         android:layout_marginTop="24dp" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-    <!-- Yellow Bottom Stripe -->
-    <View
-        android:id="@+id/bottom_stripe"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="#FFEB3B" />
-
-    <!-- Hidden Button -->
-    <Button
-        android:id="@+id/back_to_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:visibility="gone" />
 
 </LinearLayout>

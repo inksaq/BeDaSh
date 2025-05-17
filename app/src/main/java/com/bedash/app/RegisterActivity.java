@@ -57,7 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.email_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         registerButton = findViewById(R.id.register_button);
-        backToLoginButton = findViewById(R.id.back_to_login_button);
         progressBar = findViewById(R.id.progress_bar);
     }
 

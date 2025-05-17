@@ -35,6 +35,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
+        // Initialize Firebase Auth in onCreate to ensure it's available in onStart
+        mAuth = FirebaseAuth.getInstance();
+
         // Set the content view must be called in the child activity before calling setupBase()
     }
 
@@ -42,9 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity {
      * Call this method after setContentView in child activities
      */
     protected void setupBase() {
-        // Init Firebase singleton
-        mAuth = FirebaseAuth.getInstance();
-
         // Init navbar components
         initNavbar();
 
@@ -109,20 +109,24 @@ public abstract class BaseActivity extends AppCompatActivity {
      * Logout from the app
      */
     protected void logout() {
-        mAuth.signOut();
-        navigateToLogin();
-        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        if (mAuth != null) {
+            mAuth.signOut();
+            navigateToLogin();
+            Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void checkUserAuthStatus() {
         // Check auth status
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // User is signed in, update UI
-            updateUIWithUser(currentUser);
-        } else {
-            // No user is signed in, go to login screen
-            navigateToLogin();
+        if (mAuth != null) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                // User is signed in, update UI
+                updateUIWithUser(currentUser);
+            } else {
+                // No user is signed in, go to login screen
+                navigateToLogin();
+            }
         }
     }
 
@@ -142,11 +146,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in when activity starts
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            // User is not signed in, go to login
-            navigateToLogin();
+
+        // Add null check before accessing mAuth
+        if (mAuth != null) {
+            // Check if user is signed in when activity starts
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                // User is not signed in, go to login
+                navigateToLogin();
+            }
+        } else {
+            // In case mAuth is still null here, initialize it
+            mAuth = FirebaseAuth.getInstance();
         }
     }
 }

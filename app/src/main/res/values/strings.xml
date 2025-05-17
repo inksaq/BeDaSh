@@ -1,3 +1,43 @@
 <resources>
     <string name="app_name">BeDaSh</string>
+
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="activity_levels_array">
+        <item>Sedentary</item>
+        <item>Lightly active</item>
+        <item>Moderately active</item>
+        <item>Very active</item>
+        <item>Extra active</item>
+    </string-array>
+
+    <string-array name="ethnicity_array">
+        <item>White</item>
+        <item>Black</item>
+        <item>Hispanic</item>
+        <item>Asian</item>
+        <item>Middle Eastern</item>
+        <item>Indian</item>
+        <item>Mixed</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="dietary_preferences_array">
+        <item>No restrictions</item>
+        <item>Vegetarian</item>
+        <item>Vegan</item>
+        <item>Pescatarian</item>
+        <item>Gluten-free</item>
+        <item>Dairy-free</item>
+        <item>Keto</item>
+        <item>Paleo</item>
+        <item>Low carb</item>
+        <item>Low fat</item>
+        <item>Mediterranean</item>
+        <item>Other</item>
+    </string-array>
 </resources>
