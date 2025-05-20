@@ -9,19 +9,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * IMPORTANT: Changed to extend AppCompatActivity instead of BaseActivity
+ * to avoid authentication flow issues during login
+ */
 public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
@@ -29,29 +28,35 @@ public class LoginActivity extends AppCompatActivity {
     private TextView registerButton;
     private ProgressBar progressBar;
 
-    // Firebase auth
+    // Firebase instances
     private FirebaseAuth mAuth;
+    private FirestoreManager mFirestoreManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        // Initialize Firebase
+        mAuth = BeDashApplication.getInstance().getAuth();
+        mFirestoreManager = FirestoreManager.getInstance();
 
         // Initialize UI components
         initializeViews();
 
         // Set up button listeners
         setupButtonListeners();
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Check if user is already signed in
+        if (mAuth.getCurrentUser() != null) {
+            // User is already signed in, go to Dashboard
+            navigateToDashboard();
+        }
     }
 
     private void initializeViews() {
@@ -85,9 +90,14 @@ public class LoginActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     // Sign in success
-                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                                    startActivity(intent);
-                                    finish(); // Close the login activity
+
+                                    // Update last login time and online status
+                                    String nurseId = mAuth.getCurrentUser().getUid();
+                                    mFirestoreManager.updateNurseLastLogin(nurseId);
+                                    BeDashApplication.getInstance().setUserOnline();
+
+                                    // Navigate to dashboard
+                                    navigateToDashboard();
                                 } else {
                                     // Sign in fails, display a message to the user
                                     Toast.makeText(LoginActivity.this, "Authentication failed: " +
@@ -108,16 +118,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check if user is signed in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // User is already signed in, go to MainActivity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish(); // Close the login activity
-        }
+    private void navigateToDashboard() {
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+        startActivity(intent);
+        finish(); // Close the login activity
     }
 }

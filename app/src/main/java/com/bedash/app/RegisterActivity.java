@@ -8,55 +8,52 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * IMPORTANT: Changed to extend AppCompatActivity instead of BaseActivity
+ * to avoid authentication flow issues during registration
+ */
 public class RegisterActivity extends AppCompatActivity {
+    private static final String TAG = "RegisterActivity";
+
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button registerButton;
     private Button backToLoginButton;
     private ProgressBar progressBar;
 
-    // Firebase auth
+    // Firebase instances
     private FirebaseAuth mAuth;
+    private FirestoreManager mFirestoreManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        // Initialize Firebase
+        mAuth = BeDashApplication.getInstance().getAuth();
+        mFirestoreManager = FirestoreManager.getInstance();
 
         // Initialize UI components
         initializeViews();
 
         // Set up button listeners
         setupButtonListeners();
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 
     private void initializeViews() {
         emailEditText = findViewById(R.id.email_edit_text);
         passwordEditText = findViewById(R.id.password_edit_text);
         registerButton = findViewById(R.id.register_button);
+        backToLoginButton = findViewById(R.id.home_button);
         progressBar = findViewById(R.id.progress_bar);
     }
 
@@ -81,37 +78,46 @@ public class RegisterActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.VISIBLE);
 
-                // Create new user with email and password
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                // Use the enhanced registration method
+                mFirestoreManager.registerNurseWithFirebase(email, password,
+                        new FirestoreManager.DatabaseCallback<String>() {
                             @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
+                            public void onSuccess(String nurseId) {
                                 progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    // Sign in success
-                                    Toast.makeText(RegisterActivity.this, "Account created successfully!",
-                                            Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this,
+                                        "Account created successfully!",
+                                        Toast.LENGTH_SHORT).show();
 
-                                    // Go to MainActivity
-                                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish(); // Close the register activity
-                                } else {
-                                    // Registration fails, display a message to the user
-                                    Toast.makeText(RegisterActivity.this, "Registration failed: " +
-                                            task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
+                                // Set online status
+                                BeDashApplication.getInstance().setUserOnline();
+
+                                // Go to DashboardActivity
+                                Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                                startActivity(intent);
+                                finish(); // Close the register activity
+                            }
+
+                            @Override
+                            public void onError(Exception error) {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(RegisterActivity.this,
+                                        "Registration failed: " + error.getMessage(),
+                                        Toast.LENGTH_LONG).show();
                             }
                         });
             }
         });
 
-        backToLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go back to LoginActivity
-                onBackPressed();
-            }
-        });
+        if (backToLoginButton != null) {
+            backToLoginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Go back to LoginActivity
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
     }
 }

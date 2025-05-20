@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'com.bedash.app'
-    compileSdk 35  // Changed to latest stable SDK
+    compileSdk 34  // Changed to latest stable SDK
 
     defaultConfig {
         applicationId "com.bedash.app"
@@ -38,8 +38,8 @@ dependencies {
     implementation libs.firebase.analytics
     implementation libs.google.firebase.auth
     implementation libs.google.firebase.database
-
-
+    implementation("com.google.firebase:firebase-firestore")
+    implementation 'com.google.android.gms:play-services-base:18.3.0'
     // Existing dependencies
     implementation libs.appcompat
     implementation libs.material

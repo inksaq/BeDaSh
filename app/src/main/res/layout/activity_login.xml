@@ -17,22 +17,22 @@
     <ImageView
         android:id="@+id/app_logo"
         android:layout_width="387dp"
-        android:layout_height="356dp"
+        android:layout_height="259dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="60dp"
         android:src="@drawable/splash_logo" />
 
+    <!-- Username Field -->
     <TextView
         android:id="@+id/app_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:text="Health Tracking App"
         android:textColor="#666666"
-        android:textSize="18sp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        android:textSize="18sp" />
 
-    <!-- Username Field -->
     <TextView
         android:id="@+id/username_label"
         android:layout_width="match_parent"
@@ -112,18 +112,19 @@
     </LinearLayout>
 
     <!-- Login Button -->
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
+        android:layout_marginTop="24dp"
         android:layout_marginRight="40dp"
+        android:backgroundTint="#FF9800"
         android:text="Login"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:backgroundTint="#FF9800"
-        android:layout_marginTop="24dp" />
+        android:textStyle="bold" />
 
     <FrameLayout
         android:layout_width="match_parent"
