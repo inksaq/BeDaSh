@@ -36,7 +36,7 @@ public class FirestoreManager {
     // Auth reference
     private final FirebaseAuth mAuth;
 
-    // Singleton instance
+    // instance
     private static FirestoreManager instance;
 
     private FirestoreManager() {
@@ -46,14 +46,14 @@ public class FirestoreManager {
         mNursesCollection = mFirestore.collection("nurses");
 
 
-        // Configure Firestore settings
+        // Configure settings
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
                 .setPersistenceEnabled(true)
                 .build();
         mFirestore.setFirestoreSettings(settings);
     }
 
-    // Singleton accessor
+    // Singleton accessor (Manager Getter)
     public static synchronized FirestoreManager getInstance() {
         if (instance == null) {
             instance = new FirestoreManager();
@@ -76,33 +76,32 @@ public class FirestoreManager {
      * @param email The nurse's email
      * @param callback Optional callback when operation completes
      */
-    public void createNurseProfile(String nurseId, String email,
+    public void createNurseProfile(String nurseId, String email, @NonNull Map<String, Object> otherDetails,
                                    final DatabaseCallback<Void> callback) {
-        Map<String, Object> nurseData = new HashMap<>();
+        Map<String, Object> nurseData = new HashMap<>(otherDetails); // Copy other details
         nurseData.put("email", email);
+        nurseData.put("uid", nurseId); // Storing UID explicitly can be useful
         nurseData.put("createdAt", FieldValue.serverTimestamp());
-        nurseData.put("lastLogin", FieldValue.serverTimestamp());
+        nurseData.put("lastLogin", FieldValue.serverTimestamp()); // Initial login
 
         // Add a status object for tracking online/offline
         Map<String, Object> statusData = new HashMap<>();
-        statusData.put("online", false);
+        statusData.put("online", false); // Or true if they are immediately considered online
         statusData.put("lastSeen", FieldValue.serverTimestamp());
         nurseData.put("status", statusData);
 
-        // Use a transaction or batch to ensure atomic operation
-        WriteBatch batch = mFirestore.batch();
+        // The document ID will be the nurseId (Firebase UID)
         DocumentReference nurseRef = mNursesCollection.document(nurseId);
-        batch.set(nurseRef, nurseData);
 
-        batch.commit()
+        nurseRef.set(nurseData) // Using set() to create or overwrite if it somehow existed
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Nurse profile created successfully for ID: " + nurseId);
+                    Log.d(TAG, "Nurse profile created/updated successfully for ID: " + nurseId);
                     if (callback != null) {
                         callback.onSuccess(null);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error creating nurse profile: " + e.getMessage());
+                    Log.e(TAG, "Error creating/updating nurse profile for ID: " + nurseId + " Error: " + e.getMessage());
                     if (callback != null) {
                         callback.onError(e);
                     }
@@ -110,53 +109,60 @@ public class FirestoreManager {
     }
 
     /**
-     * Handle registration with rollback capability
+     * This method is kept for now but might be deprecated or removed if
+     * the responsibility of Auth creation is fully moved to the Activity/ViewModel.
+     * It handles registration with rollback capability.
      * @param email User email
      * @param password User password
-     * @param authCallback Callback with authentication result
+     * @param authCallback Callback with authentication result (returns nurseId/UID)
      */
     public void registerNurseWithFirebase(String email, String password,
                                           final DatabaseCallback<String> authCallback) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        // This FirebaseAuth instance is local to the method, or you could use mAuth if preferred.
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> { // Changed to addOnCompleteListener for better error handling
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = task.getResult().getUser();
+                        if (user != null) {
+                            String nurseId = user.getUid();
+                            Map<String, Object> initialDetails = new HashMap<>(); // Add any other default details here if needed
 
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener(authResult -> {
-                    String nurseId = authResult.getUser().getUid();
+                            // Create nurse profile in Firestore
+                            createNurseProfile(nurseId, email, initialDetails, new DatabaseCallback<Void>() {
+                                @Override
+                                public void onSuccess(Void result) {
+                                    if (authCallback != null) {
+                                        authCallback.onSuccess(nurseId);
+                                    }
+                                }
 
-                    // Create nurse profile in Firestore
-                    createNurseProfile(nurseId, email, new DatabaseCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            if (authCallback != null) {
-                                authCallback.onSuccess(nurseId);
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception error) {
-                            // If Firestore profile creation fails, delete the auth user to maintain consistency
-                            Log.e(TAG, "Failed to create nurse profile, deleting auth user: " + error.getMessage());
-
-                            // Delete the auth user since profile creation failed
-                            authResult.getUser().delete()
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d(TAG, "Auth user deleted due to profile creation failure");
-                                        if (authCallback != null) {
-                                            authCallback.onError(new Exception("Failed to create profile: " + error.getMessage()));
+                                @Override
+                                public void onError(Exception error) {
+                                    Log.e(TAG, "Firestore profile creation failed for " + nurseId + ". Attempting to delete Auth user.", error);
+                                    user.delete().addOnCompleteListener(deleteTask -> {
+                                        if (deleteTask.isSuccessful()) {
+                                            Log.d(TAG, "Auth user " + nurseId + " deleted due to Firestore profile creation failure.");
+                                        } else {
+                                            Log.e(TAG, "Failed to delete Auth user " + nurseId + " after Firestore failure.", deleteTask.getException());
                                         }
-                                    })
-                                    .addOnFailureListener(deleteError -> {
-                                        Log.e(TAG, "Error deleting auth user after profile creation failure: " + deleteError.getMessage());
+                                        // Propagate the original Firestore error
                                         if (authCallback != null) {
-                                            authCallback.onError(new Exception("Profile creation failed and cleanup failed: " + error.getMessage()));
+                                            authCallback.onError(new Exception("Failed to create profile in Firestore: " + error.getMessage(), error));
                                         }
                                     });
+                                }
+                            });
+                        } else {
+                            // Should not happen if task is successful, but good to handle
+                            if (authCallback != null) {
+                                authCallback.onError(new Exception("Firebase user was null after successful authentication."));
+                            }
                         }
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    if (authCallback != null) {
-                        authCallback.onError(e);
+                    } else {
+                        // Auth creation failed
+                        if (authCallback != null) {
+                            authCallback.onError(task.getException());
+                        }
                     }
                 });
     }

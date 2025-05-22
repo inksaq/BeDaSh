@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -21,6 +23,8 @@ public class ClientListActivity extends BaseActivity {
     private static final String TAG = "ClientListActivity";
 
     private ListView clientListView;
+
+    private ImageButton btn_back;
     private TextView emptyTextView;
     private ArrayList<Map<String, String>> clientList;
     private SimpleAdapter adapter;
@@ -41,6 +45,7 @@ public class ClientListActivity extends BaseActivity {
     private void initializeViews() {
         clientListView = findViewById(R.id.client_list_view);
         emptyTextView = findViewById(R.id.empty_text_view);
+        btn_back = findViewById(R.id.btn_back);
 
         // Initialize client list
         clientList = new ArrayList<>();
@@ -70,6 +75,13 @@ public class ClientListActivity extends BaseActivity {
 
                 // Navigate to client dashboard
                 navigateToClientDashboard(clientId, clientName);
+            }
+        });
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Finish the current activity to go to the previous one on the stack
+                finish();
             }
         });
     }

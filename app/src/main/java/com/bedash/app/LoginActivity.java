@@ -22,13 +22,15 @@ import com.google.firebase.auth.FirebaseAuth;
  * to avoid authentication flow issues during login
  */
 public class LoginActivity extends AppCompatActivity {
+
+    // UI Elements
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
     private TextView registerButton;
     private ProgressBar progressBar;
 
-    // Firebase instances
+    // Firebase
     private FirebaseAuth mAuth;
     private FirestoreManager mFirestoreManager;
 
@@ -75,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString().trim();
 
                 if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Please enter username and password",
+                    Toast.makeText(LoginActivity.this, "Please enter email and password",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }

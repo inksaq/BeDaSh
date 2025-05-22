@@ -5,16 +5,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 
-public class MainActivity extends BaseActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+
+public class MainActivity extends AppCompatActivity {
     // Splash screen delay
     private static final int SPLASH_DELAY = 1500; // 1.5 seconds
     private boolean isRedirecting = false;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Note: We don't call setupBase() here because we want to handle auth differently for splash screen
+        mAuth = BeDashApplication.getInstance().getAuth();
 
         // Show splash screen for a short time, then check auth
         new Handler().postDelayed(new Runnable() {
@@ -44,7 +50,6 @@ public class MainActivity extends BaseActivity {
         finish(); // Close MainActivity to prevent going back
     }
 
-    @Override
     protected void navigateToLogin() {
         // Override to prevent the base class from navigating during splash
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -52,15 +57,4 @@ public class MainActivity extends BaseActivity {
         finish(); // Close MainActivity to prevent going back
     }
 
-    // Override these methods to prevent base class navigation during splash
-    @Override
-    protected void setupBase() {
-        // Don't call super.setupBase() as we're handling navigation differently
-    }
-
-    @Override
-    protected void onStart() {
-        // Don't call super.onStart() as we're handling auth check differently
-        super.onStart();
-    }
 }

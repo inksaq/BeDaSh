@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ public class CreateClientActivity extends BaseActivity {
     private Spinner spinnerGender;
     private Spinner spinnerActivity;
     private Button nextButton;
+    private ImageButton btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class CreateClientActivity extends BaseActivity {
         spinnerGender = findViewById(R.id.spinner_gender);
         spinnerActivity = findViewById(R.id.spinner_activity);
         nextButton = findViewById(R.id.btn_next);
+        btn_back = findViewById(R.id.btn_back);
+
     }
 
     private void setupSpinners() {
@@ -72,6 +76,13 @@ public class CreateClientActivity extends BaseActivity {
                     intent.putExtra("client", client);
                     startActivity(intent);
                 }
+            }
+        });
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Finish the current activity to go to the previous one on the stack
+                finish();
             }
         });
     }

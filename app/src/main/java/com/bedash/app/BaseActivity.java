@@ -22,9 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    // Firebase auth
+    // Firebase
     protected FirebaseAuth mAuth;
-    // Firebase manager for database operations
     protected FirestoreManager mFirestoreManager;
 
     // Navbar elements
@@ -37,16 +36,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // Get Firebase instances from Application singleton
+        // Get Firebase instances from Application
         mAuth = BeDashApplication.getInstance().getAuth();
         mFirestoreManager = BeDashApplication.getInstance().getFirestoreManager();
 
-        // Set the content view must be called in the child activity before calling setupBase()
     }
 
-    /**
-     * Call this method after setContentView in child activities
-     */
+
     protected void setupBase() {
         // Init navbar components
         initNavbar();
@@ -92,10 +88,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Handle the home button click
-     * Override in child activities if needed
-     */
     protected void handleHomeClick() {
         // Default behavior - go to dashboard if not already there
         if (!(this instanceof DashboardActivity)) {
@@ -108,9 +100,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Logout from the app
-     */
+
     protected void logout() {
         if (mAuth != null) {
             // Mark user as offline in database
@@ -188,13 +178,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // Don't set offline here as the user might just be navigating between activities
     }
 
     @Override
     protected void onDestroy() {
         // Set offline status if this is the last activity being destroyed
-        // (this is a simplification, a more robust approach would use ActivityLifecycleCallbacks)
         if (isFinishing() && mAuth != null && mAuth.getCurrentUser() != null) {
             BeDashApplication.getInstance().setUserOffline();
         }

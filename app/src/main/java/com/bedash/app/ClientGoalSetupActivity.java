@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ public class ClientGoalSetupActivity extends BaseActivity {
     private EditText etTargetIntake;
     private Button setTargetIntakeButton;
     private Button completeProfileButton;
+
+    private ImageButton btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class ClientGoalSetupActivity extends BaseActivity {
     private void initializeViews() {
         tvRecommendedIntake = findViewById(R.id.tv_recommended_intake);
         etTargetIntake = findViewById(R.id.et_target_intake);
+        btn_back = findViewById(R.id.btn_back);
+
         setTargetIntakeButton = findViewById(R.id.btn_set_target_intake);
         completeProfileButton = findViewById(R.id.btn_complete_profile);
     }
@@ -87,6 +92,13 @@ public class ClientGoalSetupActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 saveClientToDatabase();
+            }
+        });
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Finish the current activity to go to the previous one on the stack
+                finish();
             }
         });
     }
