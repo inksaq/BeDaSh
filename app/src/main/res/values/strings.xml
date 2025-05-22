@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">BeDaSh</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="health_tracking_app">Health Tracking App</string>
+    <string name="new_user">New user?</string>
+    <string name="click_here">Click here</string>
+    <string name="login">Login</string>
 
     <string-array name="gender_array">
         <item>Male</item>

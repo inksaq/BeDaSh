@@ -22,8 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    // Firebase auth
+    // Firebase
     protected FirebaseAuth mAuth;
+    protected FirestoreManager mFirestoreManager;
 
     // Navbar elements
     protected TextView userTextView;
@@ -35,15 +36,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // Initialize Firebase Auth in onCreate to ensure it's available in onStart
-        mAuth = FirebaseAuth.getInstance();
+        // Get Firebase instances from Application
+        mAuth = BeDashApplication.getInstance().getAuth();
+        mFirestoreManager = BeDashApplication.getInstance().getFirestoreManager();
 
-        // Set the content view must be called in the child activity before calling setupBase()
     }
 
-    /**
-     * Call this method after setContentView in child activities
-     */
+
     protected void setupBase() {
         // Init navbar components
         initNavbar();
@@ -89,10 +88,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Handle the home button click
-     * Override in child activities if needed
-     */
     protected void handleHomeClick() {
         // Default behavior - go to dashboard if not already there
         if (!(this instanceof DashboardActivity)) {
@@ -105,11 +100,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Logout from the app
-     */
+
     protected void logout() {
         if (mAuth != null) {
+            // Mark user as offline in database
+            BeDashApplication.getInstance().setUserOffline();
+
+            // Sign out
             mAuth.signOut();
             navigateToLogin();
             Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
@@ -123,6 +120,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (currentUser != null) {
                 // User is signed in, update UI
                 updateUIWithUser(currentUser);
+
+                // Update last login time and online status
+                String nurseId = currentUser.getUid();
+                mFirestoreManager.updateNurseLastLogin(nurseId);
+                BeDashApplication.getInstance().setUserOnline();
             } else {
                 // No user is signed in, go to login screen
                 navigateToLogin();
@@ -154,10 +156,36 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (currentUser == null) {
                 // User is not signed in, go to login
                 navigateToLogin();
+            } else {
+                // User is signed in, set online status
+                BeDashApplication.getInstance().setUserOnline();
             }
         } else {
-            // In case mAuth is still null here, initialize it
-            mAuth = FirebaseAuth.getInstance();
+            // In case mAuth is still null here, initialize it from application
+            mAuth = BeDashApplication.getInstance().getAuth();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Set online status when activity resumes
+        if (mAuth != null && mAuth.getCurrentUser() != null) {
+            BeDashApplication.getInstance().setUserOnline();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Set offline status if this is the last activity being destroyed
+        if (isFinishing() && mAuth != null && mAuth.getCurrentUser() != null) {
+            BeDashApplication.getInstance().setUserOffline();
+        }
+        super.onDestroy();
     }
 }

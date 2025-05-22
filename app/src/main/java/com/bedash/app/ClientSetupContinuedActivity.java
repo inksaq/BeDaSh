@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -15,6 +16,8 @@ public class ClientSetupContinuedActivity extends BaseActivity {
     private Spinner spinnerDietaryPreferences;
     private EditText etAdditionalNotes;
     private Button nextButton;
+
+    private ImageButton btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,8 @@ public class ClientSetupContinuedActivity extends BaseActivity {
         spinnerDietaryPreferences = findViewById(R.id.spinner_dietary_preferences);
         etAdditionalNotes = findViewById(R.id.et_additional_notes);
         nextButton = findViewById(R.id.btn_next);
+        btn_back = findViewById(R.id.btn_back);
+
     }
 
     private void setupSpinners() {
@@ -63,6 +68,7 @@ public class ClientSetupContinuedActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 // Update client object with new information
+                //TODO ADD MORE DETAILS TO CLIENT AND MATCH DATA MODEL
                 client.setEthnicity(spinnerEthnicity.getSelectedItem().toString());
                 client.setDietaryPreferences(spinnerDietaryPreferences.getSelectedItem().toString());
 
@@ -74,6 +80,13 @@ public class ClientSetupContinuedActivity extends BaseActivity {
                 intent.putExtra("client", client);
                 intent.putExtra("recommendedCalories", recommendedCalories);
                 startActivity(intent);
+            }
+        });
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Finish the current activity to go to the previous one on the stack
+                finish();
             }
         });
     }
