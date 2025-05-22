@@ -16,13 +16,13 @@
     </string-array>
 
     <string-array name="ethnicity_array">
-        <item>White</item>
-        <item>Black</item>
-        <item>Hispanic</item>
+        <item>NZ European</item>
+        <item>Māori</item>
+        <item>Pasifika</item>
         <item>Asian</item>
         <item>Middle Eastern</item>
         <item>Indian</item>
-        <item>Mixed</item>
+        <item>African</item>
         <item>Other</item>
     </string-array>
 
