@@ -13,10 +13,10 @@
         android:id="@+id/home_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@android:drawable/ic_input_get"
+        android:src="@drawable/home_icon"
         android:background="@null"
         android:contentDescription="Home"
-        android:padding="4dp"
+        android:padding="2dp"
         app:tint="#FFFFFF" />
 
     <!-- User Text View - shows logged in user -->

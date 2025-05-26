@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#B8E6C0"
+    tools:context=".FoodItemsActivity">
+
+    <!-- Include Navigation Bar -->
+    <include
+        android:id="@+id/navbar"
+        layout="@layout/layout_navbar" />
+
+    <!-- Main Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header with Back Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Back button -->
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@null"
+                android:src="@android:drawable/ic_menu_revert"
+                android:contentDescription="Back" />
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Food Items"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tap on a category"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Food Items List -->
+        <ListView
+            android:id="@+id/food_items_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="#DDDDDD"
+            android:dividerHeight="1dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Empty View -->
+        <TextView
+            android:id="@+id/empty_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="No food items available.\nTap 'Add new food item' to create one."
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <!-- Add New Food Item Button -->
+        <Button
+            android:id="@+id/add_new_food_item_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add new food item"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF9800"
+            android:padding="12dp" />
+    </LinearLayout>
+</LinearLayout>
