@@ -2,10 +2,6 @@ package com.bedash.app;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -16,8 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +26,8 @@ public class FirestoreManager {
     private final FirebaseFirestore mFirestore;
     private final CollectionReference mClientsCollection;
     private final CollectionReference mNursesCollection;
+    private final CollectionReference mFoodsCollection;
+    private final CollectionReference mFoodEntriesCollection;
 
     // Auth reference
     private final FirebaseAuth mAuth;
@@ -44,7 +40,8 @@ public class FirestoreManager {
         mAuth = FirebaseAuth.getInstance();
         mClientsCollection = mFirestore.collection("clients");
         mNursesCollection = mFirestore.collection("nurses");
-
+        mFoodsCollection = mFirestore.collection("foods");
+        mFoodEntriesCollection = mFirestore.collection("food_entries");
 
         // Configure settings
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
@@ -76,18 +73,18 @@ public class FirestoreManager {
      * @param email The nurse's email
      * @param callback Optional callback when operation completes
      */
-    public void createNurseProfile(String nurseId, String email, @NonNull Map<String, Object> otherDetails,
+    public void createNurseProfile(String nurseId, String email, Map<String, Object> otherDetails,
                                    final DatabaseCallback<Void> callback) {
         Map<String, Object> nurseData = new HashMap<>(otherDetails); // Copy other details
         nurseData.put("email", email);
         nurseData.put("uid", nurseId); // Storing UID explicitly can be useful
-        nurseData.put("createdAt", FieldValue.serverTimestamp());
-        nurseData.put("lastLogin", FieldValue.serverTimestamp()); // Initial login
+        nurseData.put("createdAt", System.currentTimeMillis());
+        nurseData.put("lastLogin", System.currentTimeMillis()); // Initial login
 
         // Add a status object for tracking online/offline
         Map<String, Object> statusData = new HashMap<>();
         statusData.put("online", false); // Or true if they are immediately considered online
-        statusData.put("lastSeen", FieldValue.serverTimestamp());
+        statusData.put("lastSeen", System.currentTimeMillis());
         nurseData.put("status", statusData);
 
         // The document ID will be the nurseId (Firebase UID)
@@ -174,7 +171,7 @@ public class FirestoreManager {
     public void updateNurseLastLogin(String nurseId) {
         if (nurseId != null) {
             mNursesCollection.document(nurseId)
-                    .update("lastLogin", FieldValue.serverTimestamp());
+                    .update("lastLogin", System.currentTimeMillis());
         }
     }
 
@@ -258,7 +255,7 @@ public class FirestoreManager {
         clientValues.put("goalCarbs", client.getGoalCarbs());
         clientValues.put("goalFat", client.getGoalFat());
         clientValues.put("nurseId", nurseId);
-        clientValues.put("createdAt", FieldValue.serverTimestamp());
+        clientValues.put("createdAt", System.currentTimeMillis()); // Use actual timestamp
 
         // Create or update client document
         mClientsCollection.document(client.getId()).set(clientValues)
@@ -356,12 +353,203 @@ public class FirestoreManager {
         if (nurseId != null) {
             Map<String, Object> statusData = new HashMap<>();
             statusData.put("online", online);
-            statusData.put("lastSeen", FieldValue.serverTimestamp());
+            statusData.put("lastSeen", System.currentTimeMillis());
 
-            mNursesCollection.document(nurseId).update("status", statusData)
-                    .addOnFailureListener(e ->
-                            Log.e(TAG, "Error updating online status", e));
+            // First check if document exists, if not create it
+            DocumentReference nurseRef = mNursesCollection.document(nurseId);
+            nurseRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Document exists, update status
+                        nurseRef.update("status", statusData)
+                                .addOnFailureListener(e ->
+                                        Log.e(TAG, "Error updating online status", e));
+                    } else {
+                        // Document doesn't exist, create it with minimal data
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        if (currentUser != null) {
+                            Map<String, Object> nurseData = new HashMap<>();
+                            nurseData.put("email", currentUser.getEmail());
+                            nurseData.put("uid", nurseId);
+                            nurseData.put("createdAt", System.currentTimeMillis());
+                            nurseData.put("status", statusData);
+
+                            nurseRef.set(nurseData)
+                                    .addOnFailureListener(e ->
+                                            Log.e(TAG, "Error creating nurse document", e));
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "Error checking nurse document existence", task.getException());
+                }
+            });
         }
+    }
+
+    // ========== FOOD MANAGEMENT METHODS ==========
+
+    /**
+     * Save a food item to the database
+     * @param food The food object to save
+     * @param callback Callback for operation result
+     */
+    public void saveFood(Food food, final DatabaseCallback<String> callback) {
+        String nurseId = getCurrentNurseId();
+        if (nurseId == null) {
+            if (callback != null) {
+                callback.onError(new Exception("Not logged in"));
+            }
+            return;
+        }
+
+        // Generate a new food ID if needed
+        if (food.getId() == null || food.getId().isEmpty()) {
+            food.setId(mFoodsCollection.document().getId());
+        }
+
+        // Set the creator
+        food.setCreatedBy(nurseId);
+        food.setCreatedAt(System.currentTimeMillis());
+
+        // Create food data map
+        Map<String, Object> foodValues = new HashMap<>();
+        foodValues.put("id", food.getId());
+        foodValues.put("name", food.getName());
+        foodValues.put("category", food.getCategory());
+        foodValues.put("caloriesPerServing", food.getCaloriesPerServing());
+        foodValues.put("servingSize", food.getServingSize());
+        foodValues.put("createdBy", food.getCreatedBy());
+        foodValues.put("createdAt", food.getCreatedAt()); // Use actual timestamp value
+
+        // Create or update food document
+        mFoodsCollection.document(food.getId()).set(foodValues)
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(food.getId());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Get all food items
+     * @param callback Callback with food list snapshot
+     */
+    public void getAllFoods(final DatabaseCallback<QuerySnapshot> callback) {
+        mFoodsCollection.orderBy("name").get()
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(task.getResult());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Save a food entry to the database
+     * @param foodEntry The food entry object to save
+     * @param callback Callback for operation result
+     */
+    public void saveFoodEntry(FoodEntry foodEntry, final DatabaseCallback<String> callback) {
+        // Generate a new entry ID if needed
+        if (foodEntry.getId() == null || foodEntry.getId().isEmpty()) {
+            foodEntry.setId(mFoodEntriesCollection.document().getId());
+        }
+
+        // Create food entry data map
+        Map<String, Object> entryValues = new HashMap<>();
+        entryValues.put("id", foodEntry.getId());
+        entryValues.put("clientId", foodEntry.getClientId());
+        entryValues.put("foodId", foodEntry.getFoodId());
+        entryValues.put("foodName", foodEntry.getFoodName());
+        entryValues.put("servings", foodEntry.getServings());
+        entryValues.put("totalCalories", foodEntry.getTotalCalories());
+        entryValues.put("timestamp", foodEntry.getTimestamp()); // Use the actual timestamp value
+        entryValues.put("date", foodEntry.getDate());
+
+        // Create or update food entry document
+        mFoodEntriesCollection.document(foodEntry.getId()).set(entryValues)
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(foodEntry.getId());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Get food entries for a specific client and date
+     * @param clientId The client ID
+     * @param date The date in YYYY-MM-DD format
+     * @param callback Callback with food entries snapshot
+     */
+    public void getFoodEntriesForDate(String clientId, String date, final DatabaseCallback<QuerySnapshot> callback) {
+        mFoodEntriesCollection
+                .whereEqualTo("clientId", clientId)
+                .whereEqualTo("date", date)
+                .get() // Removed .orderBy to avoid composite index requirement
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(task.getResult());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Get food entries for a specific client within a date range
+     * @param clientId The client ID
+     * @param startDate The start date in YYYY-MM-DD format
+     * @param endDate The end date in YYYY-MM-DD format
+     * @param callback Callback with food entries snapshot
+     */
+    public void getFoodEntriesForDateRange(String clientId, String startDate, String endDate,
+                                           final DatabaseCallback<QuerySnapshot> callback) {
+        mFoodEntriesCollection
+                .whereEqualTo("clientId", clientId)
+                .whereGreaterThanOrEqualTo("date", startDate)
+                .whereLessThanOrEqualTo("date", endDate)
+                .get() // Removed .orderBy to avoid composite index requirement
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(task.getResult());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Delete a food entry
+     * @param entryId The food entry ID to delete
+     * @param callback Optional callback when operation completes
+     */
+    public void deleteFoodEntry(String entryId, final DatabaseCallback<Void> callback) {
+        mFoodEntriesCollection.document(entryId).delete()
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(null);
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
     }
 
     /**
@@ -375,19 +563,19 @@ public class FirestoreManager {
             client.setId(document.getId());
             client.setName(document.getString("name"));
 
-            // Handle Number types safely
+            // Handle Number types safely using Long/Double and convert to needed types
             if (document.contains("age")) {
-                Number age = document.get("age", Number.class);
+                Long age = document.getLong("age");
                 client.setAge(age != null ? age.intValue() : 0);
             }
 
             if (document.contains("weight")) {
-                Number weight = document.get("weight", Number.class);
+                Double weight = document.getDouble("weight");
                 client.setWeight(weight != null ? weight.floatValue() : 0f);
             }
 
             if (document.contains("height")) {
-                Number height = document.get("height", Number.class);
+                Double height = document.getDouble("height");
                 client.setHeight(height != null ? height.floatValue() : 0f);
             }
 
@@ -397,26 +585,107 @@ public class FirestoreManager {
             client.setDietaryPreferences(document.getString("dietaryPreferences"));
 
             if (document.contains("goalCalories")) {
-                Number calories = document.get("goalCalories", Number.class);
+                Long calories = document.getLong("goalCalories");
                 client.setGoalCalories(calories != null ? calories.intValue() : 0);
             }
 
             if (document.contains("goalProtein")) {
-                Number protein = document.get("goalProtein", Number.class);
+                Long protein = document.getLong("goalProtein");
                 client.setGoalProtein(protein != null ? protein.intValue() : 0);
             }
 
             if (document.contains("goalCarbs")) {
-                Number carbs = document.get("goalCarbs", Number.class);
+                Long carbs = document.getLong("goalCarbs");
                 client.setGoalCarbs(carbs != null ? carbs.intValue() : 0);
             }
 
             if (document.contains("goalFat")) {
-                Number fat = document.get("goalFat", Number.class);
+                Long fat = document.getLong("goalFat");
                 client.setGoalFat(fat != null ? fat.intValue() : 0);
             }
 
             return client;
+        }
+        return null;
+    }
+
+    /**
+     * Convert Food object from a Firestore document
+     * @param document The document to convert
+     * @return A Food object, or null if document doesn't exist
+     */
+    public Food documentToFood(DocumentSnapshot document) {
+        if (document.exists()) {
+            Food food = new Food();
+            food.setId(document.getId());
+            food.setName(document.getString("name"));
+            food.setCategory(document.getString("category"));
+            food.setServingSize(document.getString("servingSize"));
+            food.setCreatedBy(document.getString("createdBy"));
+
+            if (document.contains("caloriesPerServing")) {
+                Double calories = document.getDouble("caloriesPerServing");
+                food.setCaloriesPerServing(calories != null ? calories : 0.0);
+            }
+
+            if (document.contains("createdAt")) {
+                // Handle both Long and com.google.firebase.Timestamp
+                Object timestampObj = document.get("createdAt");
+                if (timestampObj instanceof Long) {
+                    food.setCreatedAt((Long) timestampObj);
+                } else if (timestampObj instanceof com.google.firebase.Timestamp) {
+                    food.setCreatedAt(((com.google.firebase.Timestamp) timestampObj).toDate().getTime());
+                } else {
+                    food.setCreatedAt(System.currentTimeMillis());
+                }
+            } else {
+                food.setCreatedAt(System.currentTimeMillis());
+            }
+
+            return food;
+        }
+        return null;
+    }
+
+    /**
+     * Convert FoodEntry object from a Firestore document
+     * @param document The document to convert
+     * @return A FoodEntry object, or null if document doesn't exist
+     */
+    public FoodEntry documentToFoodEntry(DocumentSnapshot document) {
+        if (document.exists()) {
+            FoodEntry entry = new FoodEntry();
+            entry.setId(document.getId());
+            entry.setClientId(document.getString("clientId"));
+            entry.setFoodId(document.getString("foodId"));
+            entry.setFoodName(document.getString("foodName"));
+            entry.setDate(document.getString("date"));
+
+            if (document.contains("servings")) {
+                Double servings = document.getDouble("servings");
+                entry.setServings(servings != null ? servings : 0.0);
+            }
+
+            if (document.contains("totalCalories")) {
+                Double calories = document.getDouble("totalCalories");
+                entry.setTotalCalories(calories != null ? calories : 0.0);
+            }
+
+            if (document.contains("timestamp")) {
+                // Handle both Long and com.google.firebase.Timestamp
+                Object timestampObj = document.get("timestamp");
+                if (timestampObj instanceof Long) {
+                    entry.setTimestamp((Long) timestampObj);
+                } else if (timestampObj instanceof com.google.firebase.Timestamp) {
+                    entry.setTimestamp(((com.google.firebase.Timestamp) timestampObj).toDate().getTime());
+                } else {
+                    entry.setTimestamp(System.currentTimeMillis());
+                }
+            } else {
+                entry.setTimestamp(System.currentTimeMillis());
+            }
+
+            return entry;
         }
         return null;
     }

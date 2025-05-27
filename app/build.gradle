@@ -46,6 +46,7 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     implementation libs.media3.common
+    implementation libs.google.firebase.firestore
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

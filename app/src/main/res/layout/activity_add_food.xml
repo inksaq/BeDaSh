@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#B8E6C0"
+    tools:context=".AddFoodActivity">
+
+    <!-- Include Navigation Bar -->
+    <include
+        android:id="@+id/navbar"
+        layout="@layout/layout_navbar" />
+
+    <!-- Main Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header with Back Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Back button -->
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@null"
+                android:src="@android:drawable/ic_menu_revert"
+                android:contentDescription="Back" />
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add food"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Selected Item Info Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Selected Item -->
+                <TextView
+                    android:id="@+id/selected_item_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Selected Item: [selected item]"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Calories per serving -->
+                <TextView
+                    android:id="@+id/calories_per_serving_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="150 calories per serving"
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Serving size info -->
+                <TextView
+                    android:id="@+id/serving_size_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="(1 serving = 100g)"
+                    android:textSize="12sp"
+                    android:textColor="#666666" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Serving Amount Input -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="# of servings"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/serving_amount_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:inputType="numberDecimal"
+            android:hint="1.0"
+            android:text="1.0"
+            android:selectAllOnFocus="true"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Total Calories Display -->
+        <TextView
+            android:id="@+id/total_calories_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Total calories: 150"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FF9800"
+            android:gravity="center"
+            android:background="#FFF3E0"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Add to Log Button -->
+        <Button
+            android:id="@+id/add_to_log_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add to food log"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF9800"
+            android:padding="12dp" />
+    </LinearLayout>
+</LinearLayout>
