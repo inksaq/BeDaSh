@@ -100,7 +100,8 @@
                 android:inputType="number"
                 android:hint="Enter calorie goal" />
 
-            <Button
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_set_target_intake"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -125,15 +126,19 @@
             android:layout_weight="1" />
 
         <!-- Complete Profile Button -->
-        <Button
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_complete_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Complete client profile setup"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:text="Complete profile setup"
             android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:backgroundTint="#FF9800"
-            android:padding="12dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="24dp" />
 
     </LinearLayout>
 </LinearLayout>

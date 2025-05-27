@@ -138,14 +138,18 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- Add to Log Button -->
-        <Button
+        <!-- Add to Food log -->
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_to_log_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:text="Add to food log"
             android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:backgroundTint="#FF9800"
-            android:padding="12dp" />
+            android:layout_marginTop="24dp" />
     </LinearLayout>
 </LinearLayout>

@@ -83,13 +83,18 @@
             android:visibility="gone" />
 
         <!-- Add New Food Item Button -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_new_food_item_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:text="Add new food item"
             android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:backgroundTint="#FF9800"
-            android:padding="12dp" />
+            android:layout_marginTop="24dp" />
+
     </LinearLayout>
 </LinearLayout>
