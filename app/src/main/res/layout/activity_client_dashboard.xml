@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#B8E6C0"
+    android:background="#F5F5F5"
     tools:context=".ClientDashboardActivity">
 
     <!-- Include Navigation Bar -->
@@ -15,253 +15,431 @@
         layout="@layout/layout_navbar" />
 
     <!-- Main Content -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:fillViewport="true">
 
-        <!-- Header with Back Button and Client Name -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Back button -->
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@null"
-                android:src="@android:drawable/ic_menu_revert"
-                android:contentDescription="Back" />
-
-            <!-- Client Name -->
-            <TextView
-                android:id="@+id/client_name_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Client: [name]"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:gravity="center" />
-        </LinearLayout>
-
-        <!-- Weekly Summary Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp">
-
+            <!-- Header with Back Button and Client Name -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageButton
+                    android:id="@+id/back_button"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@null"
+                    android:src="@android:drawable/ic_menu_revert"
+                    app:tint="#333333"
+                    android:contentDescription="Back" />
 
                 <TextView
+                    android:id="@+id/client_name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Client: John Doe"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginStart="16dp"/>
+
+            </LinearLayout>
+
+            <!-- Daily Progress Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Weekly Summary"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Today's Progress"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#333333"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/daily_goal_progress_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Today: 0 / 2000 calories (0%)"
+                        android:textColor="#666666"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Daily Progress Ring Chart -->
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/daily_progress_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Weekly Trend -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Weekly Calorie Trend"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#333333"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Daily calories vs goal"
+                        android:textColor="#666666"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Weekly Trend Line Chart -->
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/weekly_trend_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/weekly_total_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Weekly total: 0"
+                        android:textColor="#666666"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Weekly Summary Grid -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="This Week's Summary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#333333"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Week Grid -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Monday & Tuesday -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginEnd="4dp">
+
+                                <TextView
+                                    android:id="@+id/monday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Monday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/monday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginStart="4dp">
+
+                                <TextView
+                                    android:id="@+id/tuesday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tuesday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/tuesday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Wednesday & Thursday -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginEnd="4dp">
+
+                                <TextView
+                                    android:id="@+id/wednesday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Wednesday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/wednesday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginStart="4dp">
+
+                                <TextView
+                                    android:id="@+id/thursday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Thursday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/thursday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Friday & Saturday -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginEnd="4dp">
+
+                                <TextView
+                                    android:id="@+id/friday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Friday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/friday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginStart="4dp">
+
+                                <TextView
+                                    android:id="@+id/saturday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Saturday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/saturday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Sunday (centered) -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="8dp"
+                                android:background="#E8F5E8"
+                                android:layout_marginEnd="4dp">
+
+                                <TextView
+                                    android:id="@+id/sunday_text"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Sunday"
+                                    android:textStyle="bold"
+                                    android:textColor="#333333"
+                                    android:gravity="center" />
+
+                                <TextView
+                                    android:id="@+id/sunday_calories"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0 cal"
+                                    android:textColor="#666666"
+                                    android:gravity="center"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <!-- Empty space for balance -->
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="4dp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/food_log_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:text="Food Log"
+                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:gravity="center"
-                    android:layout_marginBottom="16dp" />
+                    android:backgroundTint="#FF9800"
+                    android:layout_marginTop="24dp" />
 
-                <!-- Days of the week -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
 
-                    <TextView
-                        android:id="@+id/monday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Monday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
 
-                    <TextView
-                        android:id="@+id/tuesday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tuesday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/wednesday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Wednesday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/thursday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Thursday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/friday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Friday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/saturday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Saturday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/sunday_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Sunday"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Calorie values for each day -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView
-                        android:id="@+id/monday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/tuesday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/wednesday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/thursday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/friday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/saturday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-
-                    <TextView
-                        android:id="@+id/sunday_calories"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0 cal"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#333333"
-                        android:gravity="center" />
-                </LinearLayout>
-
-                <!-- Weekly Total -->
-                <TextView
-                    android:id="@+id/weekly_total_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Weekly total: 0"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:gravity="center"
-                    android:background="#E8F5E8"
-                    android:padding="8dp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <!-- Food Log Button -->
-        <Button
-            android:id="@+id/food_log_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Food log"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#FF9800"
-            android:padding="12dp" />
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
