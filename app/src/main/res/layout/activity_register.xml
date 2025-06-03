@@ -27,7 +27,7 @@
         android:id="@+id/create_username_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create a username"
+        android:text="@string/create_a_username"
         android:paddingStart="18dp"
         android:paddingEnd="12dp"
         android:textColor="#333333"

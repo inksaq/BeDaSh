@@ -1,5 +1,6 @@
 [versions]
 agp = "8.10.0"
+cardview = "1.0.0"
 firebaseBom = "33.13.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -12,10 +13,16 @@ firebaseAuth = "23.2.0"
 firebaseDatabase = "21.0.0"
 media3Common = "1.7.1"
 firebaseFirestore = "25.1.4"
+
 espressoCoreVersion = "3.6.1"
 androidxJunit = "1.2.1"
 
+mpandroidchart = "v3.1.0"
+recyclerview = "1.4.0"
+
+
 [libraries]
+cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
@@ -32,8 +39,13 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 google-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCoreVersion" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
+
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

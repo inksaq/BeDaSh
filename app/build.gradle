@@ -48,9 +48,13 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.media3.common
     implementation libs.google.firebase.firestore
+
     implementation libs.androidx.espresso.core
     implementation libs.androidx.junit
 
+    implementation libs.mpandroidchart
+    implementation libs.recyclerview
+    implementation libs.cardview
     testImplementation libs.junit
     testImplementation 'org.mockito:mockito-core:5.+'
     androidTestImplementation libs.ext.junit

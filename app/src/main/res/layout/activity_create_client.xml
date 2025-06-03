@@ -156,15 +156,18 @@
         </ScrollView>
 
         <!-- Next Button -->
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:text="Next"
             android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:backgroundTint="#FF9800"
-            android:padding="12dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="24dp" />
 
     </LinearLayout>
 </LinearLayout>
