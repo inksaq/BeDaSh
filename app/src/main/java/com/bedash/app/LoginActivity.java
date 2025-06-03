@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     // Firebase
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     private FirestoreManager mFirestoreManager;
 
     @Override
