@@ -131,7 +131,6 @@
                         android:text="Daily calories vs goal"
                         android:textColor="#666666"
                         android:layout_weight="1"
-                        android:text="Sat"
                         android:textSize="12sp"
                         android:layout_marginBottom="8dp" />
 
@@ -150,9 +149,6 @@
                         android:textColor="#666666"
                         android:textSize="14sp"
                         android:layout_weight="1"
-                        android:text="Sun"
-                        android:textSize="12sp"
-                        android:textColor="#333333"
                         android:gravity="center" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
