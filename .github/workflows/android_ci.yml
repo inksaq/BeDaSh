@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,70 +19,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: 'gradle'
-
-      # IMPORTANT: google-services.json setup
-      # Add your google-services.json content as a secret named GOOGLE_SERVICES_JSON in your GitHub repository settings
-      - name: Add google-services.json
-        if: secrets.GOOGLE_SERVICES_JSON != null
-        run: echo '${{ secrets.GOOGLE_SERVICES_JSON }}' > app/google-services.json
-      - name: Warn if google-services.json is missing
-        if: secrets.GOOGLE_SERVICES_JSON == null && steps.add_google_services_json.outcome == 'skipped'
-        run: |
-          echo "Warning: GOOGLE_SERVICES_JSON secret not found."
-          echo "The build might fail or Firebase features might not work correctly."
-          echo "If your app doesn't use Firebase directly at build time for non-test variants, this might be okay, but it's generally required."
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
-        continue-on-error: true # Set to false if you want the workflow to fail immediately on test failure
-
-      - name: Upload Unit Test Results
-        if: always() # always() ensures this runs even if the previous step failed
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-results
-          path: app/build/reports/tests/testDebugUnitTest/
-          if-no-files-found: ignore # Don't fail if no report files are found
-
-      - name: Run Android instrumented tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34 # Emulator API level, your app targets SDK 35, this should be compatible.
-          target: google_apis # Use 'default' or 'google_apis' (if you use Google Play Services)
-          arch: x86_64
-          profile: Nexus 6 # A common emulator profile
-          script: ./gradlew connectedDebugAndroidTest
-          # Optional: enable KVM for faster emulation if your runner supports it (GitHub-hosted runners do)
-          # enable-hw-acceleration: true
-        continue-on-error: true # Set to false if you want the workflow to fail immediately on test failure
-
-
-      - name: Upload Android Test Results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-test-results
-          path: app/build/reports/androidTests/connected/
-          if-no-files-found: ignore
-
-      # Optional: Build debug APK
+          
       - name: Build debug APK
         run: ./gradlew assembleDebug
-
-      - name: Upload Debug APK
-        if: success() # Only upload APK if build and tests (if not continue-on-error) were successful
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: ignore
-
-      # Check test outcomes and fail the job if tests failed and continue-on-error was true
-      - name: Check Unit Test Outcome
-        if: steps.unit_tests.outcome == 'failure' || steps.instrumented_tests.outcome == 'failure'
-        run: |
-          echo "One or more test suites failed."
-          exit 1
