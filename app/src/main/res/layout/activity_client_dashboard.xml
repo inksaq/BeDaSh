@@ -73,6 +73,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
                         android:text="Today's Progress"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -83,6 +84,7 @@
                         android:id="@+id/daily_goal_progress_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
                         android:text="Today: 0 / 2000 calories (0%)"
                         android:textColor="#666666"
                         android:textSize="14sp"
@@ -111,9 +113,11 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
                         android:text="Weekly Calorie Trend"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -123,8 +127,11 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
                         android:text="Daily calories vs goal"
                         android:textColor="#666666"
+                        android:layout_weight="1"
+                        android:text="Sat"
                         android:textSize="12sp"
                         android:layout_marginBottom="8dp" />
 
@@ -142,8 +149,11 @@
                         android:text="Weekly total: 0"
                         android:textColor="#666666"
                         android:textSize="14sp"
+                        android:layout_weight="1"
+                        android:text="Sun"
+                        android:textSize="12sp"
+                        android:textColor="#333333"
                         android:gravity="center" />
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
