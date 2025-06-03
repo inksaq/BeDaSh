@@ -96,5 +96,15 @@
             android:backgroundTint="#FF9800"
             android:layout_marginTop="24dp" />
 
+        <Button
+            android:id="@+id/search_open_food_facts_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:text="Search Online Food Database"
+            android:drawableStart="@android:drawable/ic_search_category_default"
+            android:drawablePadding="8dp" />
+
     </LinearLayout>
 </LinearLayout>

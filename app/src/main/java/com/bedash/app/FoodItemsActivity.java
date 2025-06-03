@@ -69,6 +69,17 @@ public class FoodItemsActivity extends BaseActivity {
         foodItemsListView = findViewById(R.id.food_items_list);
         addNewFoodItemButton = findViewById(R.id.add_new_food_item_button);
         emptyTextView = findViewById(R.id.empty_text_view);
+        Button searchOpenFoodFactsButton = findViewById(R.id.search_open_food_facts_button);
+        searchOpenFoodFactsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodItemsActivity.this, SearchOpenFoodFactsActivity.class);
+                intent.putExtra("client_id", clientId);
+                intent.putExtra("client_name", clientName);
+                intent.putExtra("selected_date", selectedDate);
+                startActivity(intent);
+            }
+        });
 
         // Initialize lists
         foodItemsList = new ArrayList<>();
@@ -193,6 +204,6 @@ public class FoodItemsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         // Reload food items when returning from other activities
-        loadFoodItems();
+//        loadFoodItems();
     }
 }

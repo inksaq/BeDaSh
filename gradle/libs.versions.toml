@@ -12,6 +12,7 @@ firebaseAuth = "23.2.0"
 firebaseDatabase = "21.0.0"
 media3Common = "1.7.1"
 firebaseFirestore = "25.1.4"
+volley = "1.2.1"
 
 [libraries]
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -30,6 +31,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 google-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
