@@ -10,38 +10,25 @@ import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.utils.MPPointF;
-import com.github.mikephil.charting.components.Description;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ClientDashboardActivity extends BaseActivity {
     private static final String TAG = "ClientDashboardActivity";
@@ -57,12 +44,10 @@ public class ClientDashboardActivity extends BaseActivity {
     // Charts
     private PieChart dailyProgressChart;
     private LineChart weeklyTrendChart;
-    private BarChart macroChart;
 
     private String clientId;
     private String clientName;
     private FirestoreManager mFirestoreManager;
-    private DatabaseReference mDatabase;
 
     // Client goals
     private int dailyCalorieGoal = 2000;
@@ -79,9 +64,8 @@ public class ClientDashboardActivity extends BaseActivity {
         setContentView(R.layout.activity_client_dashboard);
         setupBase();
 
-        // Initialize Firebase
+        // Initialize Firestore Manager
         mFirestoreManager = FirestoreManager.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Get client data passed from previous activity
         if (getIntent().hasExtra("client_id") && getIntent().hasExtra("client_name")) {
@@ -95,6 +79,7 @@ public class ClientDashboardActivity extends BaseActivity {
 
         initializeViews();
         setupClickListeners();
+        setupCharts();
         loadClientGoals();
         loadTodayProgress();
         loadWeeklySummary();
@@ -110,8 +95,6 @@ public class ClientDashboardActivity extends BaseActivity {
         // Initialize charts
         dailyProgressChart = findViewById(R.id.daily_progress_chart);
         weeklyTrendChart = findViewById(R.id.weekly_trend_chart);
-        // Remove macro chart since we don't have macro data
-        // macroChart = findViewById(R.id.macro_chart);
 
         // Initialize day and calorie TextViews
         dayTextViews[0] = findViewById(R.id.monday_text);
@@ -138,46 +121,40 @@ public class ClientDashboardActivity extends BaseActivity {
             dayTextViews[i].setText(dayNames[i]);
             calorieTextViews[i].setText("0 cal");
         }
-
-        setupCharts();
     }
 
     private void setupCharts() {
-        // Setup Daily Progress Ring Chart
         setupDailyProgressChart();
-
-        // Setup Weekly Trend Line Chart
         setupWeeklyTrendChart();
-
-        // Note: Removed macro chart since your FoodEntry doesn't have macro data
     }
 
     private void setupDailyProgressChart() {
-        dailyProgressChart.setUsePercentValues(true);
+        dailyProgressChart.setUsePercentValues(false);
         dailyProgressChart.getDescription().setEnabled(false);
-        dailyProgressChart.setExtraOffsets(5, 10, 5, 5);
+        dailyProgressChart.setExtraOffsets(5, 5, 5, 50); // Minimal side offsets, more space at bottom
 
         dailyProgressChart.setDragDecelerationFrictionCoef(0.95f);
         dailyProgressChart.setDrawHoleEnabled(true);
         dailyProgressChart.setHoleColor(Color.WHITE);
-        dailyProgressChart.setHoleRadius(58f);
-        dailyProgressChart.setDrawCenterText(true);
-        dailyProgressChart.setCenterText("Daily\nProgress");
-        dailyProgressChart.setCenterTextSize(16f);
-        dailyProgressChart.setCenterTextColor(Color.BLACK);
+        dailyProgressChart.setHoleRadius(50f); // Slightly bigger hole for better proportions
+        dailyProgressChart.setDrawCenterText(false);
 
         dailyProgressChart.setRotationAngle(0);
         dailyProgressChart.setRotationEnabled(true);
         dailyProgressChart.setHighlightPerTapEnabled(true);
 
         Legend legend = dailyProgressChart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        legend.setEnabled(true);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
-        legend.setXEntrySpace(7f);
-        legend.setYEntrySpace(0f);
-        legend.setYOffset(0f);
+        legend.setXEntrySpace(15f);
+        legend.setYEntrySpace(5f);
+        legend.setYOffset(15f); // More space from bottom for legend
+        legend.setXOffset(0f);
+        legend.setTextColor(Color.BLACK);
+        legend.setTextSize(12f);
     }
 
     private void setupWeeklyTrendChart() {
@@ -189,9 +166,15 @@ public class ClientDashboardActivity extends BaseActivity {
         weeklyTrendChart.setPinchZoom(true);
         weeklyTrendChart.setBackgroundColor(Color.WHITE);
 
-        weeklyTrendChart.getAxisLeft().setTextColor(Color.BLACK);
-        weeklyTrendChart.getAxisRight().setEnabled(false);
-        weeklyTrendChart.getXAxis().setTextColor(Color.BLACK);
+        if (weeklyTrendChart.getAxisLeft() != null) {
+            weeklyTrendChart.getAxisLeft().setTextColor(Color.BLACK);
+        }
+        if (weeklyTrendChart.getAxisRight() != null) {
+            weeklyTrendChart.getAxisRight().setEnabled(false);
+        }
+        if (weeklyTrendChart.getXAxis() != null) {
+            weeklyTrendChart.getXAxis().setTextColor(Color.BLACK);
+        }
 
         Legend legend = weeklyTrendChart.getLegend();
         legend.setForm(Legend.LegendForm.LINE);
@@ -203,25 +186,31 @@ public class ClientDashboardActivity extends BaseActivity {
         legend.setDrawInside(false);
     }
 
-    // Remove setupMacroChart() method since we're not using macro data
-
     private void loadClientGoals() {
-        mDatabase.child("clients").child(clientId).addListenerForSingleValueEvent(new ValueEventListener() {
+        mFirestoreManager.getClient(clientId, new FirestoreManager.DatabaseCallback<DocumentSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    if (dataSnapshot.child("goalCalories").exists()) {
-                        dailyCalorieGoal = dataSnapshot.child("goalCalories").getValue(Integer.class);
-                    }
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    Client client = mFirestoreManager.documentToClient(documentSnapshot);
+                    if (client != null) {
+                        dailyCalorieGoal = client.getGoalCalories();
+                        Log.d(TAG, "Loaded goal calories from Firestore: " + dailyCalorieGoal);
 
-                    // Update charts with new goals
-                    updateDailyProgressChart();
+                        runOnUiThread(() -> {
+                            updateDailyProgressChart();
+                            updateDailyProgressText();
+                        });
+                    } else {
+                        Log.w(TAG, "Could not convert document to Client object");
+                    }
+                } else {
+                    Log.w(TAG, "Client document does not exist: " + clientId);
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Error loading client goals: " + databaseError.getMessage());
+            public void onError(Exception error) {
+                Log.e(TAG, "Error loading client goals from Firestore: " + error.getMessage());
             }
         });
     }
@@ -258,6 +247,10 @@ public class ClientDashboardActivity extends BaseActivity {
     private void updateDailyProgressChart() {
         ArrayList<PieEntry> entries = new ArrayList<>();
 
+        if (dailyCalorieGoal <= 0) {
+            dailyCalorieGoal = 2000;
+        }
+
         double progress = Math.min((todayCalories / dailyCalorieGoal) * 100, 100);
         double remaining = 100 - progress;
 
@@ -272,7 +265,6 @@ public class ClientDashboardActivity extends BaseActivity {
         dataSet.setIconsOffset(new MPPointF(4f, 4f));
         dataSet.setSelectionShift(5f);
 
-        // Colors
         ArrayList<Integer> colors = new ArrayList<>();
         if (progress >= 100) {
             colors.add(Color.rgb(255, 87, 87)); // Red for over goal
@@ -288,36 +280,59 @@ public class ClientDashboardActivity extends BaseActivity {
         dataSet.setColors(colors);
 
         PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
+        data.setDrawValues(false);
 
         dailyProgressChart.setData(data);
+
+        Legend legend = dailyProgressChart.getLegend();
+        legend.setTextColor(Color.BLACK);
+        legend.setTextSize(12f);
+
         dailyProgressChart.highlightValues(null);
         dailyProgressChart.invalidate();
     }
 
-    // Remove the macro chart methods since we don't have macro data
-    // updateMacroChart() and setupMacroChart() are no longer needed
-
-    private void updateWeeklyTrendChart() {
-        // This will be populated as we load weekly data
-        ArrayList<Entry> entries = new ArrayList<>();
-
-        // Add sample data for now - you can populate this with actual weekly data
-        for (int i = 0; i < 7; i++) {
-            // This should be replaced with actual calorie data for each day
-            entries.add(new Entry(i, 0f));
+    private void updateWeeklyTrendChart(ArrayList<Entry> entries) {
+        // Always create entries for all 7 days, even if some are empty
+        if (entries.size() < 7) {
+            // Pad with zeros if we don't have all days yet
+            while (entries.size() < 7) {
+                entries.add(new Entry(entries.size(), 0f));
+            }
         }
 
         LineDataSet dataSet = new LineDataSet(entries, "Weekly Calories");
         dataSet.setColor(Color.rgb(33, 150, 243));
-        dataSet.setLineWidth(2f);
+        dataSet.setLineWidth(3f);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setValueTextSize(9f);
+        dataSet.setDrawCircles(true);
+        dataSet.setCircleColor(Color.rgb(33, 150, 243));
+        dataSet.setCircleRadius(4f);
+        dataSet.setDrawValues(false);
 
-        LineData lineData = new LineData(dataSet);
+        // Create goal line
+        ArrayList<Entry> goalEntries = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            goalEntries.add(new Entry(i, dailyCalorieGoal));
+        }
+
+        LineDataSet goalSet = new LineDataSet(goalEntries, "Daily Goal");
+        goalSet.setColor(Color.rgb(255, 87, 87));
+        goalSet.setLineWidth(2f);
+        goalSet.setDrawCircles(false);
+        goalSet.setDrawValues(false);
+        goalSet.enableDashedLine(10f, 5f, 0f);
+
+        LineData lineData = new LineData(dataSet, goalSet);
         weeklyTrendChart.setData(lineData);
+
+        // Configure X-axis labels
+        if (weeklyTrendChart.getXAxis() != null) {
+            weeklyTrendChart.getXAxis().setGranularity(1f);
+            weeklyTrendChart.getXAxis().setLabelCount(7, true);
+        }
+
         weeklyTrendChart.invalidate();
     }
 
@@ -350,82 +365,69 @@ public class ClientDashboardActivity extends BaseActivity {
     }
 
     private void loadWeeklySummary() {
-        // Get the current week's dates
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        ArrayList<Entry> weeklyEntries = new ArrayList<>();
+
+        // Initialize chart with empty data
+        updateWeeklyTrendChart(new ArrayList<>());
 
         for (int i = 0; i < 7; i++) {
             String date = dateFormat.format(calendar.getTime());
-            loadDayCalories(date, i, weeklyEntries);
+            final int dayIndex = i;
+
+            mFirestoreManager.getFoodEntriesForDate(clientId, date, new FirestoreManager.DatabaseCallback<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot querySnapshot) {
+                    double totalCalories = querySnapshot.getDocuments().stream().map(document -> mFirestoreManager.documentToFoodEntry(document)).filter(Objects::nonNull).mapToDouble(FoodEntry::getTotalCalories).sum();
+
+                    runOnUiThread(() -> {
+                        // Update the daily display
+                        calorieTextViews[dayIndex].setText(String.format(Locale.getDefault(), "%.0f cal", totalCalories));
+
+                        // Update chart immediately with current data
+                        updateWeeklyChartProgressive();
+                        updateWeeklyTotal();
+                    });
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    Log.e(TAG, "Error loading day calories for day " + dayIndex + ": " + error.getMessage());
+                    runOnUiThread(() -> {
+                        calorieTextViews[dayIndex].setText("0 cal");
+                        updateWeeklyChartProgressive();
+                        updateWeeklyTotal();
+                    });
+                }
+            });
+
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
     }
 
-    private void loadDayCalories(String date, final int dayIndex, ArrayList<Entry> weeklyEntries) {
-        mFirestoreManager.getFoodEntriesForDate(clientId, date, new FirestoreManager.DatabaseCallback<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                double totalCalories = 0;
+    private void updateWeeklyChartProgressive() {
+        ArrayList<Entry> weeklyEntries = new ArrayList<>();
 
-                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                    FoodEntry entry = mFirestoreManager.documentToFoodEntry(document);
-                    if (entry != null && date.equals(entry.getDate())) {
-                        totalCalories += entry.getTotalCalories();
-                    }
-                }
-
-                final double finalTotalCalories = totalCalories;
-
-                runOnUiThread(() -> {
-                    calorieTextViews[dayIndex].setText(String.format(Locale.getDefault(), "%.0f cal", finalTotalCalories));
-
-                    // Add to weekly chart data
-                    weeklyEntries.add(new Entry(dayIndex, (float) finalTotalCalories));
-
-                    // Update weekly chart when all days are loaded
-                    if (weeklyEntries.size() == 7) {
-                        updateWeeklyTrendChart(weeklyEntries);
-                    }
-
-                    updateWeeklyTotal();
-                });
-            }
-
-            @Override
-            public void onError(Exception error) {
-                Log.e(TAG, "Error loading day calories: " + error.getMessage());
-            }
-        });
-    }
-
-    private void updateWeeklyTrendChart(ArrayList<Entry> entries) {
-        LineDataSet dataSet = new LineDataSet(entries, "Weekly Calories");
-        dataSet.setColor(Color.rgb(33, 150, 243));
-        dataSet.setLineWidth(3f);
-        dataSet.setValueTextColor(Color.BLACK);
-        dataSet.setValueTextSize(9f);
-        dataSet.setDrawCircles(true);
-        dataSet.setCircleColor(Color.rgb(33, 150, 243));
-        dataSet.setCircleRadius(4f);
-
-        // Add goal line
-        ArrayList<Entry> goalEntries = new ArrayList<>();
+        // Get current data from the TextViews
         for (int i = 0; i < 7; i++) {
-            goalEntries.add(new Entry(i, dailyCalorieGoal));
+            String text = calorieTextViews[i].getText().toString();
+            float calories = 0f;
+
+            if (text.contains("cal")) {
+                try {
+                    String numberPart = text.replace(" cal", "");
+                    calories = Float.parseFloat(numberPart);
+                } catch (NumberFormatException e) {
+                    calories = 0f;
+                }
+            }
+
+            weeklyEntries.add(new Entry(i, calories));
         }
 
-        LineDataSet goalSet = new LineDataSet(goalEntries, "Daily Goal");
-        goalSet.setColor(Color.rgb(255, 87, 87));
-        goalSet.setLineWidth(2f);
-        goalSet.setDrawCircles(false);
-        goalSet.enableDashedLine(10f, 5f, 0f);
-
-        LineData lineData = new LineData(dataSet, goalSet);
-        weeklyTrendChart.setData(lineData);
-        weeklyTrendChart.invalidate();
+        updateWeeklyTrendChart(weeklyEntries);
     }
 
     private void updateWeeklyTotal() {
@@ -456,7 +458,6 @@ public class ClientDashboardActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Reload data when returning from other activities
         loadTodayProgress();
         loadWeeklySummary();
     }
