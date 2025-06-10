@@ -73,7 +73,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:text="Today's Progress"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -84,7 +83,6 @@
                         android:id="@+id/daily_goal_progress_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:text="Today: 0 / 2000 calories (0%)"
                         android:textColor="#666666"
                         android:textSize="14sp"
@@ -94,7 +92,7 @@
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/daily_progress_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp" />
+                        android:layout_height="500dp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -113,11 +111,9 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:text="Weekly Calorie Trend"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -127,10 +123,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:text="Daily calories vs goal"
                         android:textColor="#666666"
-                        android:layout_weight="1"
                         android:textSize="12sp"
                         android:layout_marginBottom="8dp" />
 
@@ -148,8 +142,8 @@
                         android:text="Weekly total: 0"
                         android:textColor="#666666"
                         android:textSize="14sp"
-                        android:layout_weight="1"
                         android:gravity="center" />
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -430,20 +424,29 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/food_log_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginRight="40dp"
+                    android:layout_weight="1"
                     android:text="Food Log"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
                     android:backgroundTint="#FF9800"
-                    android:layout_marginTop="24dp" />
+                    android:layout_marginEnd="8dp"
+                    android:padding="12dp" />
 
-
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/progress_report_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Progress Report"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#34A853"
+                    android:layout_marginStart="8dp"
+                    android:padding="12dp" />
 
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
