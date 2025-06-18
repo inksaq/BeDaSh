@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,12 +26,16 @@ public class AddFoodActivity extends BaseActivity {
     private EditText servingAmountEditText;
     private TextView totalCaloriesText;
     private Button addToLogButton;
+    private Spinner mealCategorySpinner;
 
     private String clientId;
     private String clientName;
     private String selectedDate;
     private Food selectedFood;
     private FirestoreManager mFirestoreManager;
+
+    //meal category options
+    private String[] mealCategories = {"Breakfast", "Lunch", "Dinner", "Snack"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,16 @@ public class AddFoodActivity extends BaseActivity {
         servingAmountEditText = findViewById(R.id.serving_amount_edit_text);
         totalCaloriesText = findViewById(R.id.total_calories_text);
         addToLogButton = findViewById(R.id.add_to_log_button);
+        mealCategorySpinner = findViewById(R.id.meal_category_spinner);
+
+        //meal category spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, mealCategories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mealCategorySpinner.setAdapter(adapter);
+
+        //set default meal
+        mealCategorySpinner.setSelection(0);
 
         // Set food information
         selectedItemText.setText("Selected Item: " + selectedFood.getName());
@@ -152,13 +168,16 @@ public class AddFoodActivity extends BaseActivity {
     private void addFoodToLog() {
         double servingAmount = Double.parseDouble(servingAmountEditText.getText().toString().trim());
 
+        String selectedMealCategory = mealCategories[mealCategorySpinner.getSelectedItemPosition()];
+
         // Create FoodEntry
         FoodEntry foodEntry = new FoodEntry(
                 clientId,
                 selectedFood.getId(),
                 selectedFood.getName(),
                 servingAmount,
-                selectedFood.getCaloriesPerServing()
+                selectedFood.getCaloriesPerServing(),
+                selectedMealCategory
         );
 
         // Override the date with the selected date if provided
