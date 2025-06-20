@@ -95,6 +95,7 @@ public class ClientDashboardActivity extends BaseActivity {
         nutritionReportsButton = findViewById(R.id.nutrition_reports_button);
         topfoodLogButton = findViewById(R.id.top_food_log_button);
         backButton = findViewById(R.id.back_button);
+        topfoodLogButton = findViewById(R.id.top_food_log_button);
 
         // Initialize charts
         dailyProgressChart = findViewById(R.id.daily_progress_chart);
@@ -368,6 +369,15 @@ public class ClientDashboardActivity extends BaseActivity {
                 startActivity(intent);
             }
 
+        });
+        topfoodLogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ClientDashboardActivity.this, FoodLogActivity.class);
+                intent.putExtra("client_id", clientId);
+                intent.putExtra("client_name", clientName);
+                startActivity(intent);
+            }
         });
         nutritionReportsButton.setOnClickListener(new View.OnClickListener() {
             @Override
