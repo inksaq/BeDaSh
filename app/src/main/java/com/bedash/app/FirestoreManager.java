@@ -390,7 +390,7 @@ public class FirestoreManager {
     // ========== FOOD MANAGEMENT METHODS ==========
 
     /**
-     * Save a food item to the database
+     * Save a food item to the database with complete nutrition information
      * @param food The food object to save
      * @param callback Callback for operation result
      */
@@ -412,15 +412,40 @@ public class FirestoreManager {
         food.setCreatedBy(nurseId);
         food.setCreatedAt(System.currentTimeMillis());
 
-        // Create food data map
+        // Create comprehensive food data map including all nutrition information
         Map<String, Object> foodValues = new HashMap<>();
+
+        // Basic information
         foodValues.put("id", food.getId());
         foodValues.put("name", food.getName());
         foodValues.put("category", food.getCategory());
         foodValues.put("caloriesPerServing", food.getCaloriesPerServing());
         foodValues.put("servingSize", food.getServingSize());
         foodValues.put("createdBy", food.getCreatedBy());
-        foodValues.put("createdAt", food.getCreatedAt()); // Use actual timestamp value
+        foodValues.put("createdAt", food.getCreatedAt());
+
+        // Macronutrients
+        foodValues.put("protein", food.getProtein());
+        foodValues.put("totalCarbohydrates", food.getTotalCarbohydrates());
+        foodValues.put("dietaryFiber", food.getDietaryFiber());
+        foodValues.put("totalSugars", food.getTotalSugars());
+        foodValues.put("totalFat", food.getTotalFat());
+        foodValues.put("saturatedFat", food.getSaturatedFat());
+        foodValues.put("transFat", food.getTransFat());
+
+        // Critical micronutrients
+        foodValues.put("iron", food.getIron());
+        foodValues.put("vitaminD", food.getVitaminD());
+        foodValues.put("vitaminB12", food.getVitaminB12());
+        foodValues.put("folate", food.getFolate());
+        foodValues.put("magnesium", food.getMagnesium());
+
+        // Important micronutrients
+        foodValues.put("calcium", food.getCalcium());
+        foodValues.put("zinc", food.getZinc());
+        foodValues.put("potassium", food.getPotassium());
+        foodValues.put("sodium", food.getSodium());
+        foodValues.put("vitaminC", food.getVitaminC());
 
         // Create or update food document
         mFoodsCollection.document(food.getId()).set(foodValues)
@@ -453,7 +478,7 @@ public class FirestoreManager {
     }
 
     /**
-     * Save a food entry to the database
+     * Save a food entry to the database with complete nutrition information
      * @param foodEntry The food entry object to save
      * @param callback Callback for operation result
      */
@@ -463,16 +488,35 @@ public class FirestoreManager {
             foodEntry.setId(mFoodEntriesCollection.document().getId());
         }
 
-        // Create food entry data map
+        // Create comprehensive food entry data map including all nutrition information
         Map<String, Object> entryValues = new HashMap<>();
+
+        // Basic information
         entryValues.put("id", foodEntry.getId());
         entryValues.put("clientId", foodEntry.getClientId());
         entryValues.put("foodId", foodEntry.getFoodId());
         entryValues.put("foodName", foodEntry.getFoodName());
         entryValues.put("servings", foodEntry.getServings());
         entryValues.put("totalCalories", foodEntry.getTotalCalories());
-        entryValues.put("timestamp", foodEntry.getTimestamp()); // Use the actual timestamp value
+        entryValues.put("timestamp", foodEntry.getTimestamp());
         entryValues.put("date", foodEntry.getDate());
+
+        // Total nutrition values (calculated from servings)
+        entryValues.put("totalProtein", foodEntry.getTotalProtein());
+        entryValues.put("totalCarbohydrates", foodEntry.getTotalCarbohydrates());
+        entryValues.put("totalFiber", foodEntry.getTotalFiber());
+        entryValues.put("totalSugars", foodEntry.getTotalSugars());
+        entryValues.put("totalFat", foodEntry.getTotalFat());
+        entryValues.put("totalSaturatedFat", foodEntry.getTotalSaturatedFat());
+        entryValues.put("totalSodium", foodEntry.getTotalSodium());
+
+        // Total micronutrients
+        entryValues.put("totalIron", foodEntry.getTotalIron());
+        entryValues.put("totalVitaminD", foodEntry.getTotalVitaminD());
+        entryValues.put("totalVitaminB12", foodEntry.getTotalVitaminB12());
+        entryValues.put("totalFolate", foodEntry.getTotalFolate());
+        entryValues.put("totalCalcium", foodEntry.getTotalCalcium());
+        entryValues.put("totalVitaminC", foodEntry.getTotalVitaminC());
 
         // Create or update food entry document
         mFoodEntriesCollection.document(foodEntry.getId()).set(entryValues)
@@ -497,7 +541,7 @@ public class FirestoreManager {
         mFoodEntriesCollection
                 .whereEqualTo("clientId", clientId)
                 .whereEqualTo("date", date)
-                .get() // Removed .orderBy to avoid composite index requirement
+                .get()
                 .addOnCompleteListener(task -> {
                     if (callback != null) {
                         if (task.isSuccessful()) {
@@ -522,7 +566,7 @@ public class FirestoreManager {
                 .whereEqualTo("clientId", clientId)
                 .whereGreaterThanOrEqualTo("date", startDate)
                 .whereLessThanOrEqualTo("date", endDate)
-                .get() // Removed .orderBy to avoid composite index requirement
+                .get()
                 .addOnCompleteListener(task -> {
                     if (callback != null) {
                         if (task.isSuccessful()) {
@@ -610,7 +654,7 @@ public class FirestoreManager {
     }
 
     /**
-     * Convert Food object from a Firestore document
+     * Convert Food object from a Firestore document with complete nutrition information
      * @param document The document to convert
      * @return A Food object, or null if document doesn't exist
      */
@@ -623,13 +667,37 @@ public class FirestoreManager {
             food.setServingSize(document.getString("servingSize"));
             food.setCreatedBy(document.getString("createdBy"));
 
+            // Basic nutrition
             if (document.contains("caloriesPerServing")) {
                 Double calories = document.getDouble("caloriesPerServing");
                 food.setCaloriesPerServing(calories != null ? calories : 0.0);
             }
 
+            // Macronutrients
+            food.setProtein(getDoubleFromDocument(document, "protein"));
+            food.setTotalCarbohydrates(getDoubleFromDocument(document, "totalCarbohydrates"));
+            food.setDietaryFiber(getDoubleFromDocument(document, "dietaryFiber"));
+            food.setTotalSugars(getDoubleFromDocument(document, "totalSugars"));
+            food.setTotalFat(getDoubleFromDocument(document, "totalFat"));
+            food.setSaturatedFat(getDoubleFromDocument(document, "saturatedFat"));
+            food.setTransFat(getDoubleFromDocument(document, "transFat"));
+
+            // Critical micronutrients
+            food.setIron(getDoubleFromDocument(document, "iron"));
+            food.setVitaminD(getDoubleFromDocument(document, "vitaminD"));
+            food.setVitaminB12(getDoubleFromDocument(document, "vitaminB12"));
+            food.setFolate(getDoubleFromDocument(document, "folate"));
+            food.setMagnesium(getDoubleFromDocument(document, "magnesium"));
+
+            // Important micronutrients
+            food.setCalcium(getDoubleFromDocument(document, "calcium"));
+            food.setZinc(getDoubleFromDocument(document, "zinc"));
+            food.setPotassium(getDoubleFromDocument(document, "potassium"));
+            food.setSodium(getDoubleFromDocument(document, "sodium"));
+            food.setVitaminC(getDoubleFromDocument(document, "vitaminC"));
+
+            // Timestamp handling
             if (document.contains("createdAt")) {
-                // Handle both Long and com.google.firebase.Timestamp
                 Object timestampObj = document.get("createdAt");
                 if (timestampObj instanceof Long) {
                     food.setCreatedAt((Long) timestampObj);
@@ -648,7 +716,7 @@ public class FirestoreManager {
     }
 
     /**
-     * Convert FoodEntry object from a Firestore document
+     * Convert FoodEntry object from a Firestore document with complete nutrition information
      * @param document The document to convert
      * @return A FoodEntry object, or null if document doesn't exist
      */
@@ -661,18 +729,29 @@ public class FirestoreManager {
             entry.setFoodName(document.getString("foodName"));
             entry.setDate(document.getString("date"));
 
-            if (document.contains("servings")) {
-                Double servings = document.getDouble("servings");
-                entry.setServings(servings != null ? servings : 0.0);
-            }
+            // Basic values
+            entry.setServings(getDoubleFromDocument(document, "servings"));
+            entry.setTotalCalories(getDoubleFromDocument(document, "totalCalories"));
 
-            if (document.contains("totalCalories")) {
-                Double calories = document.getDouble("totalCalories");
-                entry.setTotalCalories(calories != null ? calories : 0.0);
-            }
+            // Total macronutrients
+            entry.setTotalProtein(getDoubleFromDocument(document, "totalProtein"));
+            entry.setTotalCarbohydrates(getDoubleFromDocument(document, "totalCarbohydrates"));
+            entry.setTotalFiber(getDoubleFromDocument(document, "totalFiber"));
+            entry.setTotalSugars(getDoubleFromDocument(document, "totalSugars"));
+            entry.setTotalFat(getDoubleFromDocument(document, "totalFat"));
+            entry.setTotalSaturatedFat(getDoubleFromDocument(document, "totalSaturatedFat"));
+            entry.setTotalSodium(getDoubleFromDocument(document, "totalSodium"));
 
+            // Total micronutrients
+            entry.setTotalIron(getDoubleFromDocument(document, "totalIron"));
+            entry.setTotalVitaminD(getDoubleFromDocument(document, "totalVitaminD"));
+            entry.setTotalVitaminB12(getDoubleFromDocument(document, "totalVitaminB12"));
+            entry.setTotalFolate(getDoubleFromDocument(document, "totalFolate"));
+            entry.setTotalCalcium(getDoubleFromDocument(document, "totalCalcium"));
+            entry.setTotalVitaminC(getDoubleFromDocument(document, "totalVitaminC"));
+
+            // Timestamp handling
             if (document.contains("timestamp")) {
-                // Handle both Long and com.google.firebase.Timestamp
                 Object timestampObj = document.get("timestamp");
                 if (timestampObj instanceof Long) {
                     entry.setTimestamp((Long) timestampObj);
@@ -688,6 +767,224 @@ public class FirestoreManager {
             return entry;
         }
         return null;
+    }
+
+    /**
+     * Helper method to safely get double values from Firestore documents
+     * @param document The Firestore document
+     * @param field The field name
+     * @return The double value, or 0.0 if not found or invalid
+     */
+    private double getDoubleFromDocument(DocumentSnapshot document, String field) {
+        if (document.contains(field)) {
+            Double value = document.getDouble(field);
+            return value != null ? value : 0.0;
+        }
+        return 0.0;
+    }
+
+    /**
+     * Search for food items by name
+     * @param searchQuery The search query (partial name matching)
+     * @param callback Callback with search results
+     */
+    public void searchFoods(String searchQuery, final DatabaseCallback<QuerySnapshot> callback) {
+        // Firestore doesn't support full-text search, so we'll use a simple approach
+        // For production apps, consider using Algolia or Elasticsearch for better search
+        String searchLower = searchQuery.toLowerCase();
+
+        mFoodsCollection
+                .orderBy("name")
+                .startAt(searchLower)
+                .endAt(searchLower + "\uf8ff")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(task.getResult());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Get foods by category
+     * @param category The food category
+     * @param callback Callback with filtered results
+     */
+    public void getFoodsByCategory(String category, final DatabaseCallback<QuerySnapshot> callback) {
+        mFoodsCollection
+                .whereEqualTo("category", category)
+                .orderBy("name")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(task.getResult());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Delete a food item
+     * @param foodId The food ID to delete
+     * @param callback Optional callback when operation completes
+     */
+    public void deleteFood(String foodId, final DatabaseCallback<Void> callback) {
+        mFoodsCollection.document(foodId).delete()
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(null);
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Get a food item by ID
+     * @param foodId The food ID
+     * @param callback Callback with food data
+     */
+    public void getFood(String foodId, final DatabaseCallback<DocumentSnapshot> callback) {
+        mFoodsCollection.document(foodId).get()
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(task.getResult());
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Get daily nutrition summary for a client on a specific date
+     * @param clientId The client ID
+     * @param date The date in YYYY-MM-DD format
+     * @param callback Callback with aggregated nutrition data
+     */
+    public void getDailyNutritionSummary(String clientId, String date,
+                                         final DatabaseCallback<Map<String, Double>> callback) {
+        getFoodEntriesForDate(clientId, date, new DatabaseCallback<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                Map<String, Double> nutritionSummary = new HashMap<>();
+
+                // Initialize totals
+                nutritionSummary.put("totalCalories", 0.0);
+                nutritionSummary.put("totalProtein", 0.0);
+                nutritionSummary.put("totalCarbohydrates", 0.0);
+                nutritionSummary.put("totalFiber", 0.0);
+                nutritionSummary.put("totalSugars", 0.0);
+                nutritionSummary.put("totalFat", 0.0);
+                nutritionSummary.put("totalSaturatedFat", 0.0);
+                nutritionSummary.put("totalSodium", 0.0);
+                nutritionSummary.put("totalIron", 0.0);
+                nutritionSummary.put("totalVitaminD", 0.0);
+                nutritionSummary.put("totalVitaminB12", 0.0);
+                nutritionSummary.put("totalFolate", 0.0);
+                nutritionSummary.put("totalCalcium", 0.0);
+                nutritionSummary.put("totalVitaminC", 0.0);
+
+                // Sum up all entries
+                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                    FoodEntry entry = documentToFoodEntry(document);
+                    if (entry != null) {
+                        nutritionSummary.put("totalCalories",
+                                nutritionSummary.get("totalCalories") + entry.getTotalCalories());
+                        nutritionSummary.put("totalProtein",
+                                nutritionSummary.get("totalProtein") + entry.getTotalProtein());
+                        nutritionSummary.put("totalCarbohydrates",
+                                nutritionSummary.get("totalCarbohydrates") + entry.getTotalCarbohydrates());
+                        nutritionSummary.put("totalFiber",
+                                nutritionSummary.get("totalFiber") + entry.getTotalFiber());
+                        nutritionSummary.put("totalSugars",
+                                nutritionSummary.get("totalSugars") + entry.getTotalSugars());
+                        nutritionSummary.put("totalFat",
+                                nutritionSummary.get("totalFat") + entry.getTotalFat());
+                        nutritionSummary.put("totalSaturatedFat",
+                                nutritionSummary.get("totalSaturatedFat") + entry.getTotalSaturatedFat());
+                        nutritionSummary.put("totalSodium",
+                                nutritionSummary.get("totalSodium") + entry.getTotalSodium());
+                        nutritionSummary.put("totalIron",
+                                nutritionSummary.get("totalIron") + entry.getTotalIron());
+                        nutritionSummary.put("totalVitaminD",
+                                nutritionSummary.get("totalVitaminD") + entry.getTotalVitaminD());
+                        nutritionSummary.put("totalVitaminB12",
+                                nutritionSummary.get("totalVitaminB12") + entry.getTotalVitaminB12());
+                        nutritionSummary.put("totalFolate",
+                                nutritionSummary.get("totalFolate") + entry.getTotalFolate());
+                        nutritionSummary.put("totalCalcium",
+                                nutritionSummary.get("totalCalcium") + entry.getTotalCalcium());
+                        nutritionSummary.put("totalVitaminC",
+                                nutritionSummary.get("totalVitaminC") + entry.getTotalVitaminC());
+                    }
+                }
+
+                if (callback != null) {
+                    callback.onSuccess(nutritionSummary);
+                }
+            }
+
+            @Override
+            public void onError(Exception error) {
+                if (callback != null) {
+                    callback.onError(error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Update an existing food entry
+     * @param foodEntry The updated food entry
+     * @param callback Optional callback when operation completes
+     */
+    public void updateFoodEntry(FoodEntry foodEntry, final DatabaseCallback<Void> callback) {
+        if (foodEntry.getId() == null || foodEntry.getId().isEmpty()) {
+            if (callback != null) {
+                callback.onError(new Exception("Food entry ID is required for updates"));
+            }
+            return;
+        }
+
+        // Create update map with all nutrition information
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("servings", foodEntry.getServings());
+        updates.put("totalCalories", foodEntry.getTotalCalories());
+        updates.put("totalProtein", foodEntry.getTotalProtein());
+        updates.put("totalCarbohydrates", foodEntry.getTotalCarbohydrates());
+        updates.put("totalFiber", foodEntry.getTotalFiber());
+        updates.put("totalSugars", foodEntry.getTotalSugars());
+        updates.put("totalFat", foodEntry.getTotalFat());
+        updates.put("totalSaturatedFat", foodEntry.getTotalSaturatedFat());
+        updates.put("totalSodium", foodEntry.getTotalSodium());
+        updates.put("totalIron", foodEntry.getTotalIron());
+        updates.put("totalVitaminD", foodEntry.getTotalVitaminD());
+        updates.put("totalVitaminB12", foodEntry.getTotalVitaminB12());
+        updates.put("totalFolate", foodEntry.getTotalFolate());
+        updates.put("totalCalcium", foodEntry.getTotalCalcium());
+        updates.put("totalVitaminC", foodEntry.getTotalVitaminC());
+
+        mFoodEntriesCollection.document(foodEntry.getId()).update(updates)
+                .addOnCompleteListener(task -> {
+                    if (callback != null) {
+                        if (task.isSuccessful()) {
+                            callback.onSuccess(null);
+                        } else {
+                            callback.onError(task.getException());
+                        }
+                    }
+                });
     }
 
     // Utility method to safely update a document field
