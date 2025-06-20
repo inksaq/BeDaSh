@@ -465,7 +465,7 @@
                     android:padding="12dp" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/progress_report_button"
+                    android:id="@+id/nutrition_reports_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
