@@ -70,6 +70,18 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -77,7 +89,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#333333"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="4dp" />
 
                     <TextView
                         android:id="@+id/daily_goal_progress_text"
@@ -85,9 +97,28 @@
                         android:layout_height="wrap_content"
                         android:text="Today: 0 / 2000 calories (0%)"
                         android:textColor="#666666"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="16dp" />
+                        android:textSize="14sp" />
 
+                </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/top_food_log_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="Log Food"
+                        android:textSize="12sp"
+                        android:textColor="#FFFFFF"
+                        android:backgroundTint="#FF9800"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:layout_marginStart="16dp" />
+
+                </LinearLayout>
                     <!-- Daily Progress Ring Chart -->
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/daily_progress_chart"
