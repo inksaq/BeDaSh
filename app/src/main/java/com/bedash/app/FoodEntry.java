@@ -35,6 +35,10 @@ public class FoodEntry implements Serializable {
     private double totalCalcium = 0.0;     // mg
     private double totalVitaminC = 0.0;    // mg
 
+    // Additional fields for meal tracking
+    private String mealCategory; // breakfast, lunch, dinner, snack
+    private String customTime;   // custom time string if needed
+
     // Default constructor for Firebase
     public FoodEntry() {
     }
@@ -269,8 +273,28 @@ public class FoodEntry implements Serializable {
         this.totalVitaminC = totalVitaminC;
     }
 
+    // Meal category getters and setters
+    public String getMealCategory() {
+        return mealCategory;
+    }
+
+    public void setMealCategory(String mealCategory) {
+        this.mealCategory = mealCategory;
+    }
+
+    public String getCustomTime() {
+        return customTime;
+    }
+
+    public void setCustomTime(String customTime) {
+        this.customTime = customTime;
+    }
+
     // Helper methods
     public String getFormattedTime() {
+        if (customTime != null && !customTime.isEmpty()) {
+            return customTime;
+        }
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         return timeFormat.format(new Date(timestamp));
     }
