@@ -15,6 +15,8 @@ public class FoodEntry implements Serializable {
     private double totalCalories;
     private long timestamp;
     private String date; // Format: YYYY-MM-DD for easy querying
+    private String mealCategory;
+    private String customTime;
 
     // Detailed nutrition tracking per entry (calculated from servings * food values)
     private double totalProtein = 0.0;
@@ -34,21 +36,25 @@ public class FoodEntry implements Serializable {
     private double totalVitaminC = 0.0;    // mg
 
     // Default constructor for Firebase
-    public FoodEntry() {}
+    public FoodEntry() {
+    }
 
-    // Basic constructor (for backward compatibility)
-    public FoodEntry(String clientId, String foodId, String foodName, double servings, double caloriesPerServing) {
+
+    public FoodEntry(String clientId, String foodId, String foodName, double servings, double caloriesPerServing, String mealCategory) {
+
         this.clientId = clientId;
         this.foodId = foodId;
         this.foodName = foodName;
         this.servings = servings;
         this.totalCalories = servings * caloriesPerServing;
+        this.mealCategory = mealCategory;
         this.timestamp = System.currentTimeMillis();
 
         // Set date in YYYY-MM-DD format
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         this.date = dateFormat.format(new Date(timestamp));
     }
+
 
     // Enhanced constructor with complete nutrition information
     public FoodEntry(String clientId, Food food, double servings) {
@@ -57,6 +63,7 @@ public class FoodEntry implements Serializable {
         this.foodName = food.getName();
         this.servings = servings;
         this.timestamp = System.currentTimeMillis();
+         this(clientId, foodId, foodName, servings, caloriesPerServing, "Breakfast"); // Default to Breakfast
 
         // Set date in YYYY-MM-DD format
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -71,6 +78,7 @@ public class FoodEntry implements Serializable {
      */
     private void calculateNutritionFromFood(Food food, double servings) {
         this.totalCalories = servings * food.getCaloriesPerServing();
+        
 
         // Macronutrients
         this.totalProtein = servings * food.getProtein();
@@ -90,7 +98,8 @@ public class FoodEntry implements Serializable {
         this.totalVitaminC = servings * food.getVitaminC();
     }
 
-    // Basic getters and setters
+
+    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -344,3 +353,33 @@ public class FoodEntry implements Serializable {
                 '}';
     }
 }
+
+    public String getMealCategory() {
+        return mealCategory;
+    }
+
+    public void setMealCategory(String mealCategory) {
+        this.mealCategory = mealCategory;
+    }
+
+    public void setCustomTime(String customTime) {
+        this.customTime = customTime;
+    }
+
+    public String getCustomTime() {
+        return customTime;
+    }
+
+    public String getFormattedTime() {
+        if (customTime != null && !customTime.isEmpty()) {
+            return customTime;
+        }
+        if (timestamp > 0) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
+            return timeFormat.format(new Date(timestamp));
+        }
+
+        return "Unknown time";
+    }
+}
+

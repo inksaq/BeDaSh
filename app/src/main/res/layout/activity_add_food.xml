@@ -118,6 +118,42 @@
             android:selectAllOnFocus="true"
             android:layout_marginBottom="16dp" />
 
+        <!-- Meal Category Selection -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meal Category"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/meal_category_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:color/white"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Time Selection -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/time_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:color/white"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+            android:popupBackground="@android:color/white"
+            android:dropDownWidth="match_parent" />
+
         <!-- Total Calories Display -->
         <TextView
             android:id="@+id/total_calories_text"

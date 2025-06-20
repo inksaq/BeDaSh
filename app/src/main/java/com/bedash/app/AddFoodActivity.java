@@ -6,12 +6,18 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
+
 
 public class AddFoodActivity extends BaseActivity {
     private static final String TAG = "AddFoodActivity";
@@ -24,14 +30,45 @@ public class AddFoodActivity extends BaseActivity {
     private TextView totalCaloriesText;
     private TextView nutritionPreviewText;
     private Button addToLogButton;
-
+    private Spinner mealCategorySpinner;
+    private Spinner timeSpinner;
+    private String[] timeOptions;
     private String clientId;
     private String clientName;
     private String selectedDate;
     private Food selectedFood;
     private FirestoreManager mFirestoreManager;
 
-    @Override
+    //meal category options
+    private String[] mealCategories = {"Breakfast", "Lunch", "Dinner", "Snack"};
+    //time options
+        private void generateTimeOptions() {
+        ArrayList<String> times = new ArrayList<>();
+
+            for (int hour = 0; hour < 24; hour++) {
+                for (int minute = 0; minute < 60; minute += 15) {
+                    String time24 = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
+
+                    // Convert to 12-hour format for display
+                    String displayTime;
+                    if (hour == 0) {
+                        displayTime = String.format(Locale.getDefault(), "12:%02d AM", minute);
+                    } else if (hour < 12) {
+                        displayTime = String.format(Locale.getDefault(), "%d:%02d AM", hour, minute);
+                    } else if (hour == 12) {
+                        displayTime = String.format(Locale.getDefault(), "12:%02d PM", minute);
+                    } else {
+                        displayTime = String.format(Locale.getDefault(), "%d:%02d PM", hour - 12, minute);
+                    }
+
+                    times.add(displayTime);
+                }
+            }
+
+            timeOptions = times.toArray(new String[0]);
+        }
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_food);
@@ -68,6 +105,27 @@ public class AddFoodActivity extends BaseActivity {
         totalCaloriesText = findViewById(R.id.total_calories_text);
         nutritionPreviewText = findViewById(R.id.nutrition_preview_text);
         addToLogButton = findViewById(R.id.add_to_log_button);
+        mealCategorySpinner = findViewById(R.id.meal_category_spinner);
+        timeSpinner = findViewById(R.id.time_spinner);
+
+        generateTimeOptions();
+
+        // Setup time spinner
+        ArrayAdapter<String> timeAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, timeOptions);
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        timeSpinner.setAdapter(timeAdapter);
+
+        setDefaultTime();
+
+        //meal category spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, mealCategories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mealCategorySpinner.setAdapter(adapter);
+
+        //set default meal
+        mealCategorySpinner.setSelection(0);
 
         // Set food information
         selectedItemText.setText("Selected Item: " + selectedFood.getName());
@@ -77,6 +135,41 @@ public class AddFoodActivity extends BaseActivity {
 
         // Set default serving amount to 1
         servingAmountEditText.setText("1.0");
+    }
+
+    private void setDefaultTime() {
+        Calendar now = Calendar.getInstance();
+        int currentHour = now.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = now.get(Calendar.MINUTE);
+
+        // Round to nearest 15 minutes
+        int roundedMinute = ((currentMinute + 7) / 15) * 15;
+        if (roundedMinute >= 60) {
+            roundedMinute = 0;
+            currentHour++;
+            if (currentHour >= 24) {
+                currentHour = 0;
+            }
+        }
+        // Find matching time in options array
+        String targetTime;
+        if (currentHour == 0) {
+            targetTime = String.format(Locale.getDefault(), "12:%02d AM", roundedMinute);
+        } else if (currentHour < 12) {
+            targetTime = String.format(Locale.getDefault(), "%d:%02d AM", currentHour, roundedMinute);
+        } else if (currentHour == 12) {
+            targetTime = String.format(Locale.getDefault(), "12:%02d PM", roundedMinute);
+        } else {
+            targetTime = String.format(Locale.getDefault(), "%d:%02d PM", currentHour - 12, roundedMinute);
+        }
+
+        // Set the spinner to the current time
+        for (int i = 0; i < timeOptions.length; i++) {
+            if (timeOptions[i].equals(targetTime)) {
+                timeSpinner.setSelection(i);
+                break;
+            }
+        }
     }
 
     private void setupClickListeners() {
@@ -258,8 +351,19 @@ public class AddFoodActivity extends BaseActivity {
     private void addFoodToLog() {
         double servingAmount = Double.parseDouble(servingAmountEditText.getText().toString().trim());
 
-        // Create FoodEntry with complete nutrition information
-        FoodEntry foodEntry = new FoodEntry(clientId, selectedFood, servingAmount);
+
+        String selectedMealCategory = mealCategories[mealCategorySpinner.getSelectedItemPosition()];
+        String selectedTime = timeOptions[timeSpinner.getSelectedItemPosition()];
+
+        // Create FoodEntry
+        FoodEntry foodEntry = new FoodEntry(
+                clientId,
+                selectedFood.getId(),
+                selectedFood.getName(),
+                servingAmount,
+                selectedFood.getCaloriesPerServing(),
+                selectedMealCategory
+        );
 
         // Override the date with the selected date if provided
         if (selectedDate != null && !selectedDate.isEmpty()) {
