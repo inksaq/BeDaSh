@@ -39,6 +39,7 @@ public class ClientDashboardActivity extends BaseActivity {
     private TextView[] dayTextViews = new TextView[7];
     private TextView[] calorieTextViews = new TextView[7];
     private Button foodLogButton;
+    private Button topfoodLogButton;
     private ImageButton backButton;
     private Button nutritionReportsButton;
 
@@ -92,6 +93,7 @@ public class ClientDashboardActivity extends BaseActivity {
         dailyGoalProgressText = findViewById(R.id.daily_goal_progress_text);
         foodLogButton = findViewById(R.id.food_log_button);
         nutritionReportsButton = findViewById(R.id.nutrition_reports_button);
+        topfoodLogButton = findViewById(R.id.top_food_log_button);
         backButton = findViewById(R.id.back_button);
 
         // Initialize charts
@@ -357,7 +359,7 @@ public class ClientDashboardActivity extends BaseActivity {
             }
         });
 
-        foodLogButton.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener foodLogClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ClientDashboardActivity.this, FoodLogActivity.class);
@@ -365,6 +367,7 @@ public class ClientDashboardActivity extends BaseActivity {
                 intent.putExtra("client_name", clientName);
                 startActivity(intent);
             }
+
         });
         nutritionReportsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,6 +378,10 @@ public class ClientDashboardActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        };
+        foodLogButton.setOnClickListener(foodLogClickListener);
+        topfoodLogButton.setOnClickListener(foodLogClickListener);
     }
 
     private void loadWeeklySummary() {
