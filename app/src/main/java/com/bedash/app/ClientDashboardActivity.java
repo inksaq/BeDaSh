@@ -40,6 +40,7 @@ public class ClientDashboardActivity extends BaseActivity {
     private TextView[] calorieTextViews = new TextView[7];
     private Button foodLogButton;
     private ImageButton backButton;
+    private Button nutritionReportsButton;
 
     // Charts
     private PieChart dailyProgressChart;
@@ -90,6 +91,7 @@ public class ClientDashboardActivity extends BaseActivity {
         weeklyTotalTextView = findViewById(R.id.weekly_total_text);
         dailyGoalProgressText = findViewById(R.id.daily_goal_progress_text);
         foodLogButton = findViewById(R.id.food_log_button);
+        nutritionReportsButton = findViewById(R.id.nutrition_reports_button);
         backButton = findViewById(R.id.back_button);
 
         // Initialize charts
@@ -185,6 +187,8 @@ public class ClientDashboardActivity extends BaseActivity {
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
     }
+
+
 
     private void loadClientGoals() {
         mFirestoreManager.getClient(clientId, new FirestoreManager.DatabaseCallback<DocumentSnapshot>() {
@@ -357,6 +361,15 @@ public class ClientDashboardActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ClientDashboardActivity.this, FoodLogActivity.class);
+                intent.putExtra("client_id", clientId);
+                intent.putExtra("client_name", clientName);
+                startActivity(intent);
+            }
+        });
+        nutritionReportsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ClientDashboardActivity.this, NutritionReportsActivity.class);
                 intent.putExtra("client_id", clientId);
                 intent.putExtra("client_name", clientName);
                 startActivity(intent);
