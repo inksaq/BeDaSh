@@ -70,6 +70,7 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -119,6 +120,7 @@
                             android:layout_marginStart="16dp" />
 
                     </LinearLayout>
+
                     <!-- Daily Progress Ring Chart -->
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/daily_progress_chart"

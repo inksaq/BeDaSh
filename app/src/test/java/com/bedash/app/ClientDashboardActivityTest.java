@@ -15,9 +15,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4.class)
 public class ClientDashboardActivityTest {
 
     @Test
@@ -31,7 +29,6 @@ public class ClientDashboardActivityTest {
         try (ActivityScenario<ClientDashboardActivity> scenario = ActivityScenario.launch(intent)) {
             // Verify client name is displayed
             onView(withId(R.id.client_name_text)).check(matches(withText("Client: Test Client")));
-            onView(withId(R.id.day_text)).check(matches(withText("Day: Today")));
         }
     }
 

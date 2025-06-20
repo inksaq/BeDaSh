@@ -35,9 +35,9 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@null"
+                android:contentDescription="Back"
                 android:src="@android:drawable/ic_menu_revert"
-                app:tint="#333333"
-                android:contentDescription="Back" />
+                app:tint="#333333" />
 
             <!-- Title -->
             <TextView
