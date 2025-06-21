@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enhance your knowledge and skills as a fitness trainer"
+                android:text="Enhance your knowledge and skills as a nurse or fitness trainer"
                 android:textSize="16sp"
                 android:textColor="#666666"
                 android:gravity="center"
