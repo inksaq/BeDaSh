@@ -6,10 +6,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.bedash.app.Education.EducationActivity;
+
 
 public class DashboardActivity extends BaseActivity {
     private Button createClientButton;
     private Button viewExistingClientButton;
+    private Button educationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,7 @@ public class DashboardActivity extends BaseActivity {
     private void initializeViews() {
         createClientButton = findViewById(R.id.create_client_button);
         viewExistingClientButton = findViewById(R.id.view_existing_client_button);
+        educationButton = findViewById(R.id.education_button);
     }
 
     private void setupButtons() {
@@ -40,6 +44,15 @@ public class DashboardActivity extends BaseActivity {
             public void onClick(View view) {
                 Toast.makeText(DashboardActivity.this, "View Existing Clients clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(DashboardActivity.this, ClientListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        educationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(DashboardActivity.this, "Opening Education Center", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DashboardActivity.this, EducationActivity.class);
                 startActivity(intent);
             }
         });

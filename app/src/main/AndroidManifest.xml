@@ -3,15 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Updated storage permissions for modern Android -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Updated storage permissions for modern Android -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-
-    <!-- For Android 13+ (API 33+) - Granular media permissions -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" /> <!-- For Android 13+ (API 33+) - Granular media permissions -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
@@ -27,7 +25,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BeDaSh"
         tools:targetApi="35">
-
+        <activity
+            android:name=".Education.TutorialContentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.ScenarioDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.QuizResultsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.LearningProgressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.ScenariosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.QuizzesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.QuizActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.TutorialsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Education.EducationActivity"
+            android:exported="false" />
         <activity
             android:name=".NutritionReportsActivity"
             android:exported="false" />
@@ -75,6 +99,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -88,7 +113,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Tutorial Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Tutorial Title -->
+        <TextView
+            android:id="@+id/tutorial_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tutorial Title"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Tutorial Description -->
+        <TextView
+            android:id="@+id/tutorial_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tutorial description goes here"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Tutorial Meta Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tutorial_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BEGINNER"
+                android:textColor="#4CAF50"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="#E8F5E8"
+                android:padding="4dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tutorial_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15 min"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                android:drawableStart="@android:drawable/ic_menu_recent_history"
+                android:drawablePadding="4dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Arrow Icon -->
+    <TextView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:text="→"
+        android:textSize="18sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_gravity="center_vertical" />
+
+</LinearLayout>
