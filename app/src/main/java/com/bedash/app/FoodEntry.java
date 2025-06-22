@@ -15,8 +15,6 @@ public class FoodEntry implements Serializable {
     private double totalCalories;
     private long timestamp;
     private String date; // Format: YYYY-MM-DD for easy querying
-    private String mealCategory;
-    private String customTime;
 
     // Detailed nutrition tracking per entry (calculated from servings * food values)
     private double totalProtein = 0.0;
@@ -67,7 +65,7 @@ public class FoodEntry implements Serializable {
         this.foodName = food.getName();
         this.servings = servings;
         this.timestamp = System.currentTimeMillis();
-         this(clientId, foodId, foodName, servings, caloriesPerServing, "Breakfast"); // Default to Breakfast
+        this.mealCategory = "Breakfast";// Default to Breakfast
 
         // Set date in YYYY-MM-DD format
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -375,35 +373,6 @@ public class FoodEntry implements Serializable {
                 ", totalCalories=" + totalCalories +
                 ", date='" + date + '\'' +
                 '}';
-    }
-}
-
-    public String getMealCategory() {
-        return mealCategory;
-    }
-
-    public void setMealCategory(String mealCategory) {
-        this.mealCategory = mealCategory;
-    }
-
-    public void setCustomTime(String customTime) {
-        this.customTime = customTime;
-    }
-
-    public String getCustomTime() {
-        return customTime;
-    }
-
-    public String getFormattedTime() {
-        if (customTime != null && !customTime.isEmpty()) {
-            return customTime;
-        }
-        if (timestamp > 0) {
-            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a", Locale.getDefault());
-            return timeFormat.format(new Date(timestamp));
-        }
-
-        return "Unknown time";
     }
 }
 
