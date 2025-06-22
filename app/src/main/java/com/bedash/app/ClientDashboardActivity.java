@@ -368,17 +368,7 @@ public class ClientDashboardActivity extends BaseActivity {
                 intent.putExtra("client_name", clientName);
                 startActivity(intent);
             }
-
-        });
-        topfoodLogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ClientDashboardActivity.this, FoodLogActivity.class);
-                intent.putExtra("client_id", clientId);
-                intent.putExtra("client_name", clientName);
-                startActivity(intent);
-            }
-        });
+        };
         nutritionReportsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -389,7 +379,7 @@ public class ClientDashboardActivity extends BaseActivity {
             }
         });
 
-        };
+
         foodLogButton.setOnClickListener(foodLogClickListener);
         topfoodLogButton.setOnClickListener(foodLogClickListener);
     }
