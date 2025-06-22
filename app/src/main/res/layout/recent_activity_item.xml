@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Activity Type Icon -->
+    <TextView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:text="📚"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:background="#F0F0F0"
+        android:layout_marginEnd="12dp"
+        android:layout_gravity="center_vertical" />
+
+    <!-- Activity Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Activity Type -->
+        <TextView
+            android:id="@+id/activity_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Completed Quiz"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Activity Name -->
+        <TextView
+            android:id="@+id/activity_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nutrition Fundamentals - 80% score"
+            android:textColor="#666666"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp" />
+
+    </LinearLayout>
+
+    <!-- Time Ago -->
+    <TextView
+        android:id="@+id/activity_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2 hours ago"
+        android:textColor="#999999"
+        android:textSize="11sp"
+        android:layout_gravity="center_vertical" />
+
+</LinearLayout>

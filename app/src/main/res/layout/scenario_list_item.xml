@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Scenario Icon -->
+    <TextView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:text="🎭"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:background="#F3E5F5"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="center_vertical" />
+
+    <!-- Scenario Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Scenario Title -->
+        <TextView
+            android:id="@+id/scenario_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scenario Title"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Scenario Description -->
+        <TextView
+            android:id="@+id/scenario_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scenario description goes here with client situation details"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!-- Scenario Meta Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/scenario_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="INTERMEDIATE"
+                android:textColor="#FF9800"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="#FFF3E0"
+                android:padding="4dp"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:id="@+id/scenario_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15-20 min"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                android:drawableStart="@android:drawable/ic_menu_recent_history"
+                android:drawablePadding="4dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Arrow Icon -->
+    <TextView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:text="→"
+        android:textSize="18sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_gravity="center_vertical" />
+
+</LinearLayout>
