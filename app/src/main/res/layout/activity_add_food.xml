@@ -14,10 +14,15 @@
         android:id="@+id/navbar"
         layout="@layout/layout_navbar" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
     <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -184,14 +189,15 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/nutrition_preview_text"
+                    android:id="@+id/nutrition_preview_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nutrition Preview"
                     android:textStyle="bold"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="#333333"
-                    android:layout_marginBottom="8dp" />
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp" />
 
                 <TextView
                     android:id="@+id/nutrition_preview_text"
@@ -228,4 +234,5 @@
             android:layout_marginTop="24dp" />
 
     </LinearLayout>
+    </ScrollView>
 </LinearLayout>
