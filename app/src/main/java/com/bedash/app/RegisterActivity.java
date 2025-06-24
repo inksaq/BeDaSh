@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     // Firebase instances
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     private FirestoreManager mFirestoreManager;
 
     @Override

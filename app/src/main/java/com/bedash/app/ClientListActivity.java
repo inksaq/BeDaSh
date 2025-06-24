@@ -45,16 +45,21 @@ public class ClientListActivity extends BaseActivity {
         // Initialize views
         initializeViews();
 
+
         setupButton();
+
 
         // Load client list
         loadClientList();
+
     }
+
 
     private void initializeViews() {
         clientListView = findViewById(R.id.client_list_view);
         emptyTextView = findViewById(R.id.empty_text_view);
         backButton = findViewById(R.id.btn_back);
+
 
         // Initialize client list
         clientList = new ArrayList<>();
@@ -70,7 +75,16 @@ public class ClientListActivity extends BaseActivity {
 
         clientListView.setAdapter(adapter);
 
-        // Set empty view
+
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+
+
+            // Set empty view
         clientListView.setEmptyView(emptyTextView);
 
         // Set item click listener
@@ -96,6 +110,7 @@ public class ClientListActivity extends BaseActivity {
             }
         });
     }
+
 
     private void loadClientList() {
         // Show loading

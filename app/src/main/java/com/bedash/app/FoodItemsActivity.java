@@ -309,6 +309,6 @@ public class FoodItemsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         // Reload food items when returning from other activities
-        loadFoodItems();
+//        loadFoodItems();
     }
 }
