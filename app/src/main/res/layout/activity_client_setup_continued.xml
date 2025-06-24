@@ -125,7 +125,7 @@
                     android:gravity="top"
                     android:minLines="4"
                     android:inputType="textMultiLine"
-                    android:hint="Enter any additional information about the client's goals or needs" />
+                    android:hint="Enter any additional information about the client, including any medical conditions if applicable." />
 
             </LinearLayout>
         </ScrollView>
