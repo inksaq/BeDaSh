@@ -29,7 +29,13 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="16dp">
 
-            <!-- Back button -->
+            <!-- Left section with back button -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical">
+
             <ImageButton
                 android:id="@+id/back_button"
                 android:layout_width="32dp"
@@ -37,20 +43,33 @@
                 android:background="@null"
                 android:src="@android:drawable/ic_menu_revert"
                 android:contentDescription="Back" />
+            </LinearLayout>
 
-            <!-- Title -->
-            <TextView
-                android:layout_width="0dp"
+            <!-- Centre section with title -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Food log"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
-                android:gravity="center" />
+                android:textColor="#333333" />
         </LinearLayout>
 
-        <!-- Date Navigation -->
+                <!-- Right section (empty for balance) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+                <!-- Date Navigation -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,7 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:text="Add new food item"
+            android:text="Log food"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
