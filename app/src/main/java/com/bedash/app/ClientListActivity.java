@@ -46,6 +46,8 @@ public class ClientListActivity extends BaseActivity {
         initializeViews();
 
 
+        setupButton();
+
 
         // Load client list
         loadClientList();
@@ -96,6 +98,15 @@ public class ClientListActivity extends BaseActivity {
 
                 // Navigate to client dashboard
                 navigateToClientDashboard(clientId, clientName);
+            }
+        });
+    }
+
+    private void setupButton() {
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
