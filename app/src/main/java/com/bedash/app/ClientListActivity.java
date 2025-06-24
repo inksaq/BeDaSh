@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ public class ClientListActivity extends BaseActivity {
     private TextView emptyTextView;
     private ArrayList<Map<String, String>> clientList;
     private SimpleAdapter adapter;
+    private ImageButton backButton;
 
     // Firestore
     private FirestoreManager mFirestoreManager;
@@ -43,6 +45,8 @@ public class ClientListActivity extends BaseActivity {
         // Initialize views
         initializeViews();
 
+        setupButton();
+
         // Load client list
         loadClientList();
     }
@@ -50,6 +54,7 @@ public class ClientListActivity extends BaseActivity {
     private void initializeViews() {
         clientListView = findViewById(R.id.client_list_view);
         emptyTextView = findViewById(R.id.empty_text_view);
+        backButton = findViewById(R.id.btn_back);
 
         // Initialize client list
         clientList = new ArrayList<>();
@@ -79,6 +84,15 @@ public class ClientListActivity extends BaseActivity {
 
                 // Navigate to client dashboard
                 navigateToClientDashboard(clientId, clientName);
+            }
+        });
+    }
+
+    private void setupButton() {
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
