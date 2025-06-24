@@ -20,7 +20,6 @@ public class ClientGoalSetupActivity extends BaseActivity {
     private int recommendedCalories;
     private TextView tvRecommendedIntake;
     private EditText etTargetIntake;
-    private Button setTargetIntakeButton;
     private Button completeProfileButton;
 
     // Firestore
@@ -54,7 +53,6 @@ public class ClientGoalSetupActivity extends BaseActivity {
     private void initializeViews() {
         tvRecommendedIntake = findViewById(R.id.tv_recommended_intake);
         etTargetIntake = findViewById(R.id.et_target_intake);
-        setTargetIntakeButton = findViewById(R.id.btn_set_target_intake);
         completeProfileButton = findViewById(R.id.btn_complete_profile);
     }
 
@@ -68,10 +66,19 @@ public class ClientGoalSetupActivity extends BaseActivity {
     }
 
     private void setupButtons() {
-        setTargetIntakeButton.setOnClickListener(new View.OnClickListener() {
+        completeProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (validateInput()) {
+                    setClientGoals();
+                    saveClientToDatabase();
+                }
+            }
+        });
+    }
+
+
+    private void setClientGoals() {
                     int targetIntake = Integer.parseInt(etTargetIntake.getText().toString().trim());
                     client.setGoalCalories(targetIntake);
 
@@ -84,21 +91,8 @@ public class ClientGoalSetupActivity extends BaseActivity {
                     client.setGoalCarbs(carbsGrams);
                     client.setGoalFat(fatGrams);
 
-                    Toast.makeText(ClientGoalSetupActivity.this,
-                            "Target intake set to " + targetIntake + " calories",
-                            Toast.LENGTH_SHORT).show();
-
-                    completeProfileButton.setEnabled(true);
-                }
-            }
-        });
-
-        completeProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveClientToDatabase();
-            }
-        });
+        Log.d(TAG, "Client goals set - Calories: " + targetIntake +
+                ", Protein: " + proteinGrams + "g, Carbs: " + carbsGrams + "g, Fat: " + fatGrams + "g");
     }
 
     private boolean validateInput() {

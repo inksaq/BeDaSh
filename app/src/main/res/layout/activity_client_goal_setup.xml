@@ -28,8 +28,8 @@
             android:layout_height="32dp"
             android:background="@null"
             android:src="@android:drawable/ic_menu_revert"
-            android:tint="#333333"
-            android:contentDescription="Back" />
+            android:contentDescription="Back"
+            app:tint="#333333" />
 
         <!-- Title -->
         <TextView
@@ -80,36 +80,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Set target intake for this client:"
+            android:text="Target intake for this client (type new goal to update):"
             android:textColor="#333333"
             android:layout_marginTop="16dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
             <EditText
                 android:id="@+id/et_target_intake"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:background="@android:color/white"
                 android:padding="12dp"
                 android:inputType="number"
-                android:hint="Enter calorie goal" />
-
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_set_target_intake"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Set"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#34A853"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
+                android:hint="Enter calorie goal"
+                android:layout_margin="8dp" />
 
         <!-- Information about macros -->
         <TextView
